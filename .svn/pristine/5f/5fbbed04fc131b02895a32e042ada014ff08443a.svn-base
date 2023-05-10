@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.kseolha.mapper.FriendMapper">
+    
+    
+    <insert id="insert">
+    INSERT INTO friend (following, followed)
+        VALUES (#{following}, #{followed})
+    </insert>
+    
+    <delete id="delete" parameterType="long">
+    DELETE FROM friend WHERE fno = #{fno}
+    </delete>
+    
+   
+    
+    <!-- 친구 차단 -->
+	<update id="block" >
+		UPDATE friend
+		SET blocked = true
+		WHERE fno = #{fno} AND (following = #{email} OR followed = #{email})
+	</update>
+
+<select id="getFollowers" resultType="map">
+  SELECT m.name as "name", m.id as "id", f.followed as "followed"
+  FROM friend f
+  JOIN member m ON f.followed = m.email
+  WHERE f.following = #{following}
+</select>
+
+
+ <select id="getFollowings" resultType="map">
+  SELECT m.name as "name", m.id as "id", f.following as "following"
+  FROM friend f
+  JOIN member m ON f.following = m.email
+  WHERE f.followed = #{followed}
+</select>
+	<!-- 언팔로우 4/12 update -> delete로 변경--> 
+	<delete id="unfollow" >
+		DELETE FROM friend
+		WHERE following = #{following} AND followed = #{followed}
+	</delete>
+	
+	<!-- 언팔로잉 -->
+	<delete id="unfollowing" >
+		DELETE FROM friend
+		WHERE followed = #{followed} AND following = #{following}
+	</delete>
+    <!--맞팔확인  -->
+    <select id="selectFriend" resultType="boolean"> 
+       SELECT 
+  CASE
+    WHEN 
+      (SELECT COUNT(*) FROM friend WHERE following =  #{following} AND followed = #{followed}) > 0 AND 
+      (SELECT COUNT(*) FROM friend WHERE following = #{followed} AND followed = #{following}) > 0
+    THEN 1
+    ELSE 0
+  END AS f
+FROM dual
+    </select>
+    
+    </mapper>

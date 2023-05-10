@@ -1,0 +1,50 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link href="${pageContext.request.contextPath }/resources/css/login.css" rel="stylesheet">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+</head>
+<body>
+<!-- 
+
+수정사항 
+04.04 김민수 : 로그인화면수정 ( 메인로고, 너비, 텍스트 ) 
+04.05 김민수 : 전체적 크기 조절 
+
+ -->
+
+
+<div class="container login-container">
+      <div class="row">
+        <div class="col-md-6 block text-center mt-4 login_logo">
+	        <img src="${pageContext.request.contextPath}/resources/img/login_logo.png">
+        </div>
+        <div class="col-md-5 login-form">
+          <h3>Login</h3>
+          <form>
+            <div class="form-group">
+              <input type="text" class="form-control" name="username" placeholder="아이디를 입력해주세요">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" name="password" placeholder="비밀번호를 입력해주세요">
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-lg btn-block">회원가입</button>
+            </div>
+            <div class="form-group forget-password text-center">
+                <a href="#">비밀번호를 잊어버리셨나요?</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+</body>
+</html>

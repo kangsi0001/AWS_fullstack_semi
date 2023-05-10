@@ -1,0 +1,208 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java"
+		 isELIgnored="false"%>
+
+<jsp:include page="../layout/header.jsp"></jsp:include>
+<link
+		href="${pageContext.request.contextPath }/resources/css/styleBoard_230407.css"
+		rel="stylesheet">
+
+<style>
+	a {
+		cursor: pointer;
+	}
+	.feed-main {
+		display :flex;
+		justify-content: center;
+	}
+	.myfeed {
+		max-width: 620px;
+	}
+	.story {
+		height: auto;
+		display: flex;
+		padding: 45px 0 20px;
+		justify-content: space-around;
+	}
+	.myinfo {
+		width: 250px;
+		height: 400px;
+	}
+	.story-img, .media .info-img {
+		width: 60px;
+		height: 60px;
+		border-radius: 50%;
+		border: white 2px solid;
+		padding: 0;
+	}
+	.story-active {
+		width: 64px;
+		height: 64px;
+		border-radius: 50%;
+		border: #cceabf 2px solid;
+	}
+	.myboard {
+		width : 470px;
+		margin: auto;
+		padding-top: 30px;
+	}
+	.board-btnbox {
+		margin: 0;
+		padding: 10px;
+	}
+	.board-btnbox li {
+		padding-right: 8px;
+	}
+	.board-btnbox li:nth-of-type(4) {
+		float : right;
+		padding-right: 0;
+		margin-right: -23px;
+	}
+	.reply-view, .reply-add {
+		color: #757575;
+		font-size: 15px;
+	}
+	.reply-view p {
+		padding: 5px 0 10px;
+		margin:0;
+	}
+	.reply-add {
+		border: none;
+		width: 100%;
+		margin-left: -2px;
+		padding-bottom: 10px;
+	}
+	.feed-writer, .reply-view:hover, .feed-writer:hover {
+		color: #fdb3b6;
+	}
+	.reply-addbtn {
+		float: right;
+		background-color: white;
+		border: none;
+		cursor: pointer;
+		color: #757575;
+	}
+
+	.write-img {
+		border: none !important;
+		border-radius: 50%;
+		width: 30px !important;
+		height: 30px !important;
+	}
+
+	textarea {
+		border: none;
+		width: 100%;
+		height: 300px;
+		padding: 10px 15px;
+		resize: none;
+		border-bottom: #e9ecef solid 1px;
+	}
+
+	.write-option {
+		height: 40px;
+		border-bottom: solid 1px #e9ecef;
+		cursor: pointer;
+	}
+	
+	.modalscroll {
+ 		overflow-x: hidden; 
+ 		overflow-y: auto;
+  		height: 412.11px;
+ 	}
+ 	
+ 	.modalscroll::-webkit-scrollbar {
+		display: none; /* Chrome, Safari, Opera*/
+	}
+	.search-main img {
+		width: 100%;
+		height: auto;
+	}
+	.profileTab {
+		cursor: pointer;
+	}
+	
+</style>
+
+<div class="search-container d-flex flex-column h-100 w-100 align-items-center">
+
+	<div class="col-12 search-main px-3">
+		<div class="col-12 d-flex flex-column px-4 justify-content-around" style="height:400px">
+			<!-- 추후 반응형 작업 필요 -->
+			<div class="d-flex flex-row align-items-center px-5 mt-4">
+				<!-- 이때 우리 이미지는 전부 1:1로 저장되기때문에 추후에 height auto로 바꾸기!!!! 안바꾸면 반응형에서 찌그러짐 -->
+				<img class="col-3 ms-4" src="${pageContext.request.contextPath }/resources/img/attach.jpg"
+					style="width: 150px; height:150px; border-radius:50%">
+				<div class="col-9 d-flex flex-column align-items-start pb-2 ps-4 ms-5">
+					<div class="fs-5 pb-2 fw-bold">${member.id } 
+						<!-- 본인 프로필인 경우에만 -->
+						<button class="btn border-0 p-2 px-3 ms-5 my-3" style="color:white;background-color:#c0cabf;font-size:13px">프로필 편집</button>
+						<!-- 본인 프로필이 아닌 경우에만 -->
+						<button class="message-btn btn border-0 bg-light p-2 px-3 ms-3 my-3" style="font-size:13px">메시지 보내기</button>
+						<button class="btn border-0 bg-light p-2 px-3 ms-3 my-3" style="font-size:13px"><i class="fas fa-user-plus"></i></button>
+						<i class="fas fa-ellipsis-h ms-3 my-3"></i>
+					</div>
+					<div class="d-flex flex-row pb-3">
+						<div class="pe-4 me-3">게시물 <span class="fw-bold">25</span></div>
+						<div class="pe-4 me-3">팔로워 <span class="fw-bold">210</span></div>
+						<div class="pe-4 me-3">팔로우 <span class="fw-bold">260</span></div>
+					</div>
+					<div class="pt-3 fw-bold">${member.name } <span class="ps-2">음악가 / 밴드</span></div>
+					<div class="pt-2 border-0 col-12 overflow-hidden" style="height:60px" readonly>By grace, through faith.<br>촬영, 광고 문의 kseolha@seorane.com</div>
+				</div>	
+			</div>
+			
+			<!-- 프로필 상단 탭 : 기능 수정 가능성 有 -->			
+			<div class="col-12 d-flex flex-row flex-align-center text-center mt-4" style="height:50px">
+				<div class="profileTab profileTab-board col-4 m-auto py-2 border-bottom border-3">게시글</div>
+				<div class="profileTab profileTab-club col-4 m-auto py-2 border-bottom">모임</div>
+				<!-- <div class="col-3 m-auto py-2 border-bottom">저장됨</div> -->
+				<div class="profileTab profileTab-tag col-4 m-auto py-2 border-bottom">태그됨</div>
+			</div>
+		</div>
+		
+		<!-- 게시글 목록 Start -->
+		<div class="profile-board col-12 d-flex mt-1 flex-wrap">
+			<!-- 게시글 1 Start -->
+			<div class="col-4 overflow-hidden">
+				<a>
+				<img class="p-1" src="${pageContext.request.contextPath }/resources/img/attach.jpg">
+				</a>
+			</div>
+			<!-- 게시글 1 End -->
+
+		</div>
+		<!-- 게시글 목록 End -->
+	</div>
+
+</div>
+<script>
+
+$(function() {
+
+	$(".profileTab-club").on("click", function() {
+		console.log("모임리스트 출력하기~")
+		if('${not empty member}'){
+			clubService.getMyClubList({email: encodeURIComponent('${member.email}')}, function(result){
+				for(let i in result){
+					console.log(result[i])
+				}
+			})
+		}
+	})
+	
+	$(".message-btn").on("click", function() {
+		messageService.chat({}, function(result) {
+			
+		})
+	})
+	
+	
+})
+
+
+
+
+</script>
+
+<jsp:include page="../layout/footer.jsp"></jsp:include>

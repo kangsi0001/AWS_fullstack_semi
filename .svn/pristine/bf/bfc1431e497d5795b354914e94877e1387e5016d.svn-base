@@ -1,0 +1,8 @@
+package com.kseolha.domain;
+
+public class FriendVO {
+	private int fno;             // pk
+	private String following;    // fk
+	private String followed;     // fk
+
+}

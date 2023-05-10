@@ -1,0 +1,22 @@
+package com.kseolha.service;
+
+import java.util.List;
+
+import com.kseolha.domain.FriendVO;
+
+public interface FriendService {
+	
+	//친구 추가
+	void follow(FriendVO vo);
+	
+	
+	//친구 삭제
+	void unfollow(Long fno);
+	
+	//친구 목록
+	List<FriendVO> getList();
+	
+	//친구 차단 
+	
+
+}

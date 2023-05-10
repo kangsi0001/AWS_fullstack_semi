@@ -1,0 +1,293 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java"
+		 isELIgnored="false"%>
+
+<jsp:include page="./layout/header.jsp"></jsp:include>
+<link
+		href="${pageContext.request.contextPath }/resources/css/styleBoard_230405.css"
+		rel="stylesheet">
+
+<style>
+	a {
+		cursor: pointer;
+	}
+	.feed-main {
+		display :flex;
+		justify-content: center;
+	}
+	.myfeed {
+		max-width: 620px;
+	}
+	.story {
+		height: auto;
+		display: flex;
+		padding: 45px 0 20px;
+		justify-content: space-around;
+	}
+	.myinfo {
+		width: 250px;
+		height: 400px;
+	}
+	.story-img, .media .info-img {
+		width: 60px;
+		height: 60px;
+		border-radius: 50%;
+		border: white 2px solid;
+		padding: 0;
+	}
+	.story-active {
+		width: 64px;
+		height: 64px;
+		border-radius: 50%;
+		border: #cceabf 2px solid;
+	}
+	.myboard {
+		width : 470px;
+		margin: auto;
+		padding-top: 30px;
+	}
+	.board-btnbox {
+		margin: 0;
+		padding: 10px;
+	}
+	.board-btnbox li {
+		padding-right: 8px;
+	}
+	.board-btnbox li:nth-of-type(4) {
+		float : right;
+		padding-right: 0;
+		margin-right: -23px;
+	}
+	.reply-view, .reply-add {
+		color: #757575;
+		font-size: 15px;
+	}
+	.reply-view p {
+		padding: 5px 0 10px;
+		margin:0;
+	}
+	.reply-add {
+		border: none;
+		width: 100%;
+		margin-left: -2px;
+		padding-bottom: 10px;
+	}
+	.feed-writer, .reply-view:hover, .feed-writer:hover {
+		color: #fdb3b6;
+	}
+	.reply-addbtn {
+		float: right;
+		background-color: white;
+		border: none;
+		cursor: pointer;
+		color: #757575;
+	}
+
+</style>
+
+<div class="feed-main">
+
+	<div class="myfeed">
+		<div class="story">
+			<div class="d-flex me-3">
+				<div class="story-active">
+					<a href="">
+						<img class="story-img" src="${pageContext.request.contextPath }/resources/img/attach.jpg">
+					</a>
+				</div>
+			</div>
+			<div class="d-flex me-3">
+				<div class="story-active">
+					<a href="">
+						<img class="story-img" src="${pageContext.request.contextPath }/resources/img/attach.jpg">
+					</a>
+				</div>
+			</div>
+			<div class="d-flex me-3">
+				<div class="story-active">
+					<a href="">
+						<img class="story-img" src="${pageContext.request.contextPath }/resources/img/attach.jpg">
+					</a>
+				</div>
+			</div>
+			<div class="d-flex me-3">
+				<div class="story-active">
+					<a href="">
+						<img class="story-img" src="${pageContext.request.contextPath }/resources/img/attach.jpg">
+					</a>
+				</div>
+			</div>
+			<div class="d-flex me-3">
+				<div class="story-active">
+					<a href="">
+						<img class="story-img" src="${pageContext.request.contextPath }/resources/img/attach.jpg">
+					</a>
+				</div>
+			</div>
+			<div class="d-flex me-3">
+				<div class="story-active">
+					<a href="">
+						<img class="story-img" src="${pageContext.request.contextPath }/resources/img/attach.jpg">
+					</a>
+				</div>
+			</div>
+			<div class="d-flex me-3">
+				<div class="story-active">
+					<a href="">
+						<img class="story-img" src="${pageContext.request.contextPath }/resources/img/attach.jpg">
+					</a>
+				</div>
+			</div>
+			<div class="d-flex me-3">
+				<div class="story-active">
+					<a href="">
+						<img class="story-img" src="${pageContext.request.contextPath }/resources/img/attach.jpg">
+					</a>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="boards">
+
+		</div>
+
+	</div>
+
+	<div class="modal fade" id="boardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		 aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+			<div class="modal-content d-inline-block">
+				<div class="col-7 d-inline-block">
+					<img class="img-fluid"
+						 src="../../resources/img/attach.jpg"
+						 alt="Image" style="width:100%; max-height:587.5px">
+				</div>
+
+				<div class="col-3 d-inline-block">
+					<div id="user">
+						<div id="writer" class="d-block"></div>
+						<div id="content" class="d-block"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="myinfo myinfo_moblie">
+		<div class="cardbox-header p-5 ms-3">
+			<div class="media">
+				<div class="d-flex me-3">
+					<a href="">
+						<img class="info-img" src="${pageContext.request.contextPath }/resources/img/attach.jpg">
+					</a>
+				</div>
+				<div class="media-body">
+					<p class="m-0" style="font-weight: 600">seorane</p>
+					<p class="m-0">서라네</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script> cp = '${pageContext.request.contextPath}'</script>
+<script src="${pageContext.request.contextPath}/resources/js/board.js"></script>
+<script>
+	$(function () {
+		moment.locale('ko')
+		let str = "";
+
+		boardService.getList({categoty : 1}, function (result) {
+			console.log(result)
+			for (let i in result) {
+				str += getBoardLiStr(result[i])
+			}
+			$(".boards").html(str)
+		});
+
+		$(".boards").on("click", "div", function () {
+			boardService.get($(this).data("bno"), function (result) {
+				$("#boardModal").modal("show").data("bno", result.bno)
+				$("#writer").text(result.writer)
+				$("#content").text(result.content)
+				$("#regdate").text(moment(result.regdate).startOf('day').fromNow())
+				$("#modalFooter button").show()
+				$("#modalFooter button").eq(2).hide()
+				$("#boardModal").modal("show").data("bno", result.bno)
+			})
+		});
+
+		$(window).scroll(function () {
+			var scrollTop = $(window).scrollTop();
+			var innerHeight = $(window).innerHeight();
+			var scrollHeight = $('body').prop('scrollHeight');
+			if (scrollTop + innerHeight >= scrollHeight) {
+				boardService.getList({bno : $(".myboard:last").data("bno")}, function (result) {
+					str = ""
+					for (let i in result) {
+						str += getBoardLiStr(result[i])
+					}
+					$(".boards").append(str)
+				})
+			}
+		});
+
+		function getBoardLiStr(obj) {
+			return `
+			<div class="myboard" data-bno="\${obj.bno}">
+
+				<div class="cardbox-header py-2">
+
+					<div class="float-end">
+						<button class="btn btn-flat btn-flat-icon" type="button">
+							<i class="fas fa-ellipsis-h"></i>
+						</button>
+					</div>
+
+					<div class="media m-0">
+						<div class="d-flex mr-3">
+							<a href=""><img class="img-fluid rounded-circle"
+											src="../../resources/img/attach.jpg"
+											alt="User"></a>
+						</div>
+						<div class="media-body">
+							<p class="m-0">\${obj.writer}</p>
+							<small><span><i class="icon ion-md-pin"></i>
+								\${obj.bno}</span></small> <small><span><i
+								class="icon ion-md-time"></i>\${moment(obj.regdate).startOf('day').fromNow()}</span></small>
+						</div>
+					</div>
+				</div>
+				<div class="cardbox-item">
+					<img class="img-fluid"
+						 src="../../resources/img/attach.jpg"
+						 alt="Image" style="width:100%; max-height:587.5px">
+				</div>
+				<div class="cardbox-base">
+					<ul class="board-btnbox">
+						<li><a><i class="far fa-heart"></i></a></li>
+						<li><a><i class="far fa-comment"></i></a></li>
+						<li><a><i class="far fa-paper-plane"></i></a></li>
+						<li><a><i class="far fa-bookmark"></i></a></li>
+					</ul>
+					<div>
+						<p style="margin-bottom:5px">좋아요 \${obj.likecnt}개</p>
+					</div>
+					<div>
+						<a class="feed-writer">\${obj.writer}</a><span class="board-content" style="padding: 5px">\${obj.content}</span>
+					</div>
+					<div>
+						<a class="reply-view"><p>댓글 \${obj.replycnt}개 모두 보기</p></a>
+						<input type="text" class="reply-add" placeholder="댓글 달기.." />
+					</div>
+				</div>
+			</div>
+			`
+		}
+	})
+</script>
+
+
+<jsp:include page="./layout/footer.jsp"></jsp:include>
+
+

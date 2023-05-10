@@ -1,0 +1,27 @@
+package com.kseolha.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.kseolha.domain.MessageVO;
+
+public interface MessageMapper {
+	
+	void insert(MessageVO vo);
+	
+	MessageVO selectOne(Long mno);
+	
+	List<MessageVO> chat(@Param("receiver") String receiver, @Param("sender") String sender);
+	
+/*	List<MessageVO>*/
+	
+	List<MessageVO> uncheckedList(String receiver);
+	
+    int delete(Long mno);
+    
+    int deleteRoom(Long room);
+
+    int update(Long mno);
+
+}

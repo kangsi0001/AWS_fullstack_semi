@@ -1,0 +1,5 @@
+package com.kseolha.service;
+
+public interface ReplyService {
+
+}

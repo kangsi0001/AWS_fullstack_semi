@@ -1,0 +1,70 @@
+package com.kseolha.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.kseolha.domain.FriendVO;
+/**
+ * 
+ * @author 강태수
+ * 
+ * 4/5일
+ * follow(), unfollow() 차단 생성
+ * 
+ * 4/6일 
+ * 팔로워 목록 팔로잉 목록 생성
+ * 
+ * 4/10일
+ * selectFriend() 생성
+ * 
+ * 4/12일
+ * 팔로워 목록 팔로잉 목록 List -> List<Map 으로 수정
+ * 
+ * 4/15 List<Map<String, Object>> selectFriend 수정 
+ * boolean -> List<Map<String, Object>> 으로변경
+ * 
+ * 4/17 
+ * followCount,followerCount 생성 
+ * 
+ * 4/18
+ * unfollowing 추가
+ */
+
+public interface FriendService {
+	
+	//친구 추가
+	void follow(FriendVO vo);
+	
+	
+	
+	//언팔로우
+	void unfollow(String following, String followed);
+	void unfollowing(String followed, String following);
+	
+
+	
+	//친구 차단 
+	//void block(Long fno);
+	
+	//팔로워 목록
+	
+	List<Map<String, Object>> getFollowers(String following);
+	
+	//팔로잉 목록
+	
+	List<Map<String, Object>> getFollowings(String followed);
+	
+	//맞팔체크
+ //   boolean selectFriend(String following, String followed);
+	
+	public List<Map<String, Object>> selectFriend(String following); 
+     
+    
+    int followCount(String email);
+    int followerCount(String email);
+
+
+
+    
+
+}

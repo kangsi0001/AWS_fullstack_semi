@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kseolha.mapper.AttachMapper">
+
+    <insert id="insert">
+        insert into attach(name, path, uuid, image, bno, cno) values(#{name}, #{path}, #{uuid}, #{image}, #{bno}, #{cno})
+    </insert>
+
+    <delete id="delete">
+        delete from attach where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteByBno">
+        delete from attach where bno = ${bno}
+    </delete>
+
+    <select id="findBy" resultType="attach">
+        select * from attach where bno = #{bno}
+    </select>
+</mapper>

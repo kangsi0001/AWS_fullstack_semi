@@ -1,0 +1,4 @@
+package com.kseolha.controller;
+
+public class BoardController {
+}

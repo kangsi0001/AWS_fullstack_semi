@@ -1,0 +1,19 @@
+package com.kseolha.service;
+
+import com.kseolha.domain.FriendVO;
+
+public interface FriendService {
+	
+	//친구 추가
+	void follow(FriendVO vo);
+	
+	
+	//친구 삭제
+	void unfollow(Long fno);
+	
+	//친구 조회
+	
+	//친구 차단 
+	
+
+}

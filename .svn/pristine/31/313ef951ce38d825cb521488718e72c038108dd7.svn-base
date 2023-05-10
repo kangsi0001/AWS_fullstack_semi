@@ -1,0 +1,55 @@
+package com.kseolha.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import com.kseolha.domain.FriendVO;
+import com.kseolha.domain.MemberVO;
+
+public interface FriendMapper {
+	// 친구 추가
+     void insert(FriendVO vo);
+    
+    // 친구 목록 조회
+  //  List<FriendVO> getList(String email);
+    List<FriendVO> getList();
+    
+    // 일반 조회
+ //   public List<MemberVO> selectByKeyword(String keyword);
+    
+    
+    // 친구 삭제
+    int delete(Long fno);
+    
+    
+    
+    
+  //친구 차단
+  	public void block(@Param("fno") Long fno, @Param("email") String email);
+    
+  	// 차단 목록 조회
+  	public List<String> selectBlockedList(String email);
+    
+  //팔로워 목록
+  	public List<FriendVO> getFollowers(@Param("following") String following);
+  	
+  	//팔로잉 목록
+  	public List<FriendVO> getFollowings(@Param("followed") String followed);
+
+  	//언팔로우
+  	public void unfollow(@Param("following") String following, @Param("followed") String followed);
+  	
+  	//언팔로잉
+  //	public void unfollowing(@Param("followed") String following, @Param("following") String followed);
+  	
+
+  	//맞팔체크
+	boolean selectFriend(@Param("following") String following, @Param("followed") String followed); 
+	
+	
+	
+
+}

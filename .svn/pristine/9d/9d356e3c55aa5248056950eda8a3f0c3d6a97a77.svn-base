@@ -1,0 +1,32 @@
+package com.kseolha.service;
+
+import java.util.Date;
+import java.util.Map;
+
+import com.kseolha.domain.MemberVO;
+import com.kseolha.mapper.MemberMapper;
+
+public interface MemberService {
+	/*
+	 * 04.04 
+	 * 김민수 
+	 * 로그인,회원가입 
+	 */
+	
+		
+	// 회원가입 
+	void register(MemberVO vo)  throws Exception;
+	
+	// 로그인 
+	MemberVO login(MemberVO vo) throws Exception;
+	
+	// 아이디 중복 검사 
+	public int idCheck(String email) throws Exception;
+	
+	// 자동로그인 유지 
+
+	
+	// 세션키
+
+	
+}

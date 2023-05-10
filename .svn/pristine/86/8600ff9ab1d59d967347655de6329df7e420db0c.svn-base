@@ -1,0 +1,26 @@
+package com.kseolha.controller;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.kseolha.domain.MemberVO;
+import com.kseolha.service.MemberService;
+
+import lombok.Data;
+import lombok.extern.log4j.Log4j;
+
+@Controller
+@Log4j
+@RequestMapping("member/*")
+@Data
+public class MemberLoginController {
+	
+	private MemberService memberservice;
+	
+
+}

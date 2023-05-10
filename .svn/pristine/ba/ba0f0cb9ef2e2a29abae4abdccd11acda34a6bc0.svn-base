@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kseolha.mapper.BoardMapper">
+    <insert id="insert">
+        INSERT INTO board (bno, title, content, writer) VALUES (nextval(seq_board), #{title}, #{content}, #{writer})
+    </insert>
+
+    <insert id="insertSelectKey">
+
+    </insert>
+
+    <select id="getList" resultType="board">
+        select
+        bno
+        , title
+        , content
+        , (select id from member join board b on member.email = b.writer where board.bno = b.bno) writer
+        , regdate
+        , updatedate
+        , hitcount
+        , category
+        , replycnt
+        , (select count(*) from boardLike bL join board on bL.bno = board.bno) likecnt
+        from board
+        where category = 1
+        <![CDATA[
+            and bno < #{bno} and rownum() <= 10
+        ]]>
+        order by bno desc ;
+    </select>
+
+    <select id="read" resultType="board">
+        select
+        bno
+        , title
+        , content
+        , (select id from member join board b on member.email = b.writer where board.bno = b.bno) writer
+        , regdate
+        , updatedate
+        , hitcount
+        , category
+        , replycnt
+        , (select count(*) from boardLike bL join board on bL.bno = board.bno) likecnt
+        from board where bno = #{bno}
+    </select>
+
+    <update id="update">
+        update board set title = #{title}, content = #{content}, writer = #{writer}, updatedate = now() where bno = #{bno}
+    </update>
+
+    <delete id="delete">
+        delete from board where bno = #{bno}
+<!--        and category = #{category}-->
+    </delete>
+
+    <select id="getListWithPaging" resultType="com.kseolha.domain.BoardVO">
+
+    </select>
+
+    <select id="getTotalCnt" resultType="java.lang.Integer">
+
+    </select>
+
+    <select id="getLists" resultType="board">
+        select *, (select count(*) from boardLike bL join board on bL.bno = board.bno) likecnt from board where category = 1 and
+        <![CDATA[
+            rownum() <= 10
+        ]]>
+        order by bno desc limit 10
+    </select>
+</mapper>

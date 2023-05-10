@@ -1,0 +1,33 @@
+package com.kseolha.controller;
+
+import com.kseolha.domain.BoardVO;
+import com.kseolha.service.BoardService;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Optional;
+
+@RequestMapping("/board/")
+@RestController
+@Log4j
+@AllArgsConstructor
+public class BoardController {
+    private BoardService service;
+
+    @GetMapping({"list", "list/{bno}"})
+    public List<BoardVO> getList(@PathVariable(required = false) Optional <Long> bno) {
+        log.info(bno);
+        return service.getList(bno.orElse(service.getLists().get(0).getBno() + 1));
+    }
+
+    @GetMapping("{bno}")
+    public BoardVO get(@PathVariable Long bno) {
+        return service.get(bno);
+    }
+}

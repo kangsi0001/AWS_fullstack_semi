@@ -1,0 +1,71 @@
+package com.kseolha.controller;
+
+import com.kseolha.domain.BoardLikeVO;
+import com.kseolha.domain.BoardVO;
+import com.kseolha.service.BoardService;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Optional;
+
+@RequestMapping("/board/")
+@Controller
+@Log4j
+@AllArgsConstructor
+public class BoardController {
+    private BoardService service;
+
+    @GetMapping({"list", "list/{category}", "list/{category}/{bno}"}) @ResponseBody
+    public List<BoardVO> getList(@PathVariable(required = false) Optional <Long> category, @PathVariable(required = false) Optional <Long> bno) {
+        log.info(bno);
+        return service.getList(category.orElse(null), bno.orElse(service.getLists().get(0).getBno() + 1));
+    }
+
+    @GetMapping("{bno}") @ResponseBody
+    public BoardVO get(@PathVariable Long bno) {
+        return service.get(bno);
+    }
+
+    @PutMapping("modify/{bno}") @ResponseBody
+    public int modify(@PathVariable Long bno, @RequestBody BoardVO vo) {
+        return service.modify(vo);
+    }
+
+    @DeleteMapping("remove/{bno}") @ResponseBody
+    public int remove(@PathVariable Long bno) {
+        return service.remove(bno);
+    }
+
+    @GetMapping("getLike/{id}") @ResponseBody
+    public List<BoardLikeVO> getLikeList(@PathVariable String id) {
+        return service.getLikeList(id);
+    }
+
+    @PostMapping("{bno}/like") @ResponseBody
+    public void like(@PathVariable Long bno, String id) {
+        service.like(bno, id);
+    }
+
+    @DeleteMapping("{bno}/unlike") @ResponseBody
+    public int unlike(@PathVariable Long bno, String id) {
+        return service.unlike(bno, id);
+    }
+
+    @GetMapping("feed")
+    public String board() {
+        return "board/feed";
+    }
+
+    @PostMapping("register") @ResponseBody
+    public Long register(BoardVO vo) {
+        service.register(vo);
+        return vo.getBno();
+    }
+}

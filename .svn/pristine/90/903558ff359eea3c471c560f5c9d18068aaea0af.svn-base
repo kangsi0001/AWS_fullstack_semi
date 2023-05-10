@@ -1,0 +1,315 @@
+/**
+ * @강태수
+ * 4/10일 생성
+ * 모달 
+ * 4/11 수정
+ * ajax 비동기 처리 
+ * 
+ */
+$(document).on("click", "#followingBtn", function () {
+  $('#followingModal').modal('show');
+  $.ajax({
+    type: "GET",
+    url: "/friend/followers?following=test1",
+    dataType: "json",
+    success: function(data) {
+      var tbody = $("#followerTable tbody");
+      tbody.empty();
+      for (var i = 0; i < data.length; i++) {
+        var row = $("<tr></tr>");
+        row.append("<td>" + data[i].name + "</td>");
+        row.append("<td>" + data[i].id + "</td>");
+        row.append("<td>" + data[i].followed + "</td>");
+        var followed = data[i].followed;
+
+        if (followed) {
+          row.append('<td><button class="btn btn-danger unfollow-btn" data-followed="' + followed + '" data-following="test1" data-followed-user="' + data[i].followed + '">언팔로우</button></td>');
+        } else {
+          row.append('<td><button class="btn btn-primary follow-btn" data-followed="' + followed + '" data-following="test1" data-followed-user="' + data[i].followed + '">팔로우</button></td>');
+        }
+        tbody.append(row);
+      }
+
+      // 언팔로우 버튼 클릭 시
+      $(document).on("click", ".unfollow-btn", function () {
+        console.log("언팔로우 버튼 클릭됨");
+        var btn = $(this);
+        var following = btn.data("following");
+        var followed = btn.data("followed-user");
+        $.ajax({
+          type: "DELETE",
+          url: "/friend/unfollow/" + following + "/" + followed,
+          dataType: "json",
+          success: function (data) {
+            // 언팔로우 버튼을 팔로우 버튼으로 변경
+            btn.text("팔로우");
+            btn.removeClass("btn-danger");
+            btn.addClass("btn-primary");
+            btn.data("followed", false);
+          },
+          error: function (e) {
+            console.log(e);
+          },
+        });
+      });
+
+      $(document).on("click", "#followBtn", function () {
+    	    var following = $("#following").val();
+    	    var followed = $("#followed").val();
+
+    	    $.ajax({
+    	        type: "POST",
+    	        url: "/friend/follow",
+    	        data: JSON.stringify({
+    	            "following": following,
+    	            "followed": followed
+    	        }),
+    	        contentType: "application/json",
+    	        success: function(data) {
+    	            console.log("success");
+    	            $("#followModal").modal("hide");
+    	        },
+    	        error: function(xhr, status, error) {
+    	            console.log("error");
+    	        }
+    	    });
+    	});
+      
+    },
+    error: function(e) {
+        console.log(e);
+      },
+  });
+});
+
+//$(document).on("click", "#followingBtn", function () {
+//  $('#followingModal').modal('show');
+//  $.ajax({
+//    type: "GET",
+//    url: "/friend/followers/test1",
+//    dataType: "json",
+//    success: function(data) {
+//      var tbody = $("#followerTable tbody");
+//      tbody.empty();
+//      for (var i = 0; i < data.length; i++) {
+//        var row = $("<tr></tr>");
+//        row.append("<td>" + data[i].name + "</td>");
+//        row.append("<td>" + data[i].id + "</td>");
+//        row.append("<td>" + data[i].followed + "</td>");
+//        var followed = data[i].followed;
+//
+//        if (followed) {
+//          row.append('<td><button class="btn btn-danger unfollow-btn" data-followed="' + followed + '" data-following="test1" data-followed-user="' + data[i].email + '">언팔로우</button></td>');
+//        } else {
+//          row.append('<td><button class="btn btn-primary follow-btn" data-followed="' + followed + '" data-following="test1" data-followed-user="' + data[i].email + '">팔로우</button></td>');
+//        }
+//        tbody.append(row);
+//      }
+//
+//      // 언팔로우 버튼 클릭 시
+//      $(document).on("click", ".unfollow-btn", function () {
+//        console.log("언팔로우 버튼 클릭됨");
+//        var btn = $(this);
+//        var following = btn.data("following");
+//        var followed = btn.data("followed-user");
+//        $.ajax({
+//          type: "GET",
+//          url: "/friend/unfollow/" + following + "/" + followed,
+//          dataType: "json",
+//          success: function (data) {
+//            // 언팔로우 버튼을 팔로우 버튼으로 변경
+//            btn.text("팔로우");
+//            btn.removeClass("btn-danger");
+//            btn.addClass("btn-primary");
+//            btn.data("followed", false);
+//          },
+//          error: function (e) {
+//            console.log(e);
+//          },
+//        });
+//      });
+//
+//      $(document).on("click", ".follow-btn", function () {
+//        console.log("팔로우 버튼 클릭됨");
+//        var btn = $(this);
+//        var following = btn.data("following");
+//        var followed = btn.data("followed-user");
+//        $.ajax({
+//          type: "GET",
+//          url: "/friend/follow/" + following + "/" + followed,
+//          dataType: "json",
+//          success: function (data) {
+//            // 팔로우 버튼을 언팔로우 버튼으로 변경
+//            btn.text("언팔로우");
+//            btn.removeClass("btn-primary");
+//            btn.addClass("btn-danger");
+//            btn.data("followed", true);
+//          },
+//          error: function (e) {
+//            console.log(e);
+//          },
+//        });
+//      });
+//    },
+//    error: function(e) {
+//      console.log(e);
+//    },
+//  });
+//});
+
+$(document).on("click", "#followerBtn", function () {
+	  $('#followerModal').modal('show');
+	  var followed = $("#followed").val(); // get the user being followed
+	  $.ajax({
+	    type: "GET",
+	    url: "/friend/followings?followed=test1", //+ followed,
+	    dataType: "json",
+	    success: function(data) {
+	      var tbody = $("#followingTable tbody");
+	      tbody.empty();
+	      for (var i = 0; i < data.length; i++) {
+	        var row = $("<tr></tr>");
+	        row.append("<td>" + data[i].name + "</td>");
+	        row.append("<td>" + data[i].id + "</td>");
+	        var isFollowed = data[i].followed;
+
+	        if (isFollowed) {
+	          row.append('<td><button class="btn btn-danger unfollow-btn" data-followed-user="' + data[i].id + '" data-following="' + followed + '">언팔로우</button></td>');
+	        } else {
+	          row.append('<td><button class="btn btn-primary follow-btn" data-followed-user="' + data[i].id + '" data-following="' + followed + '">팔로우</button></td>');
+	        }
+	        tbody.append(row);
+	      }
+	    },
+	    error: function(e) {
+	      console.log(e);
+	    },
+	  });
+	});
+
+$(document).on("click", ".follow-btn", function () {
+	  var btn = $(this);
+	  var following = btn.data("following");
+	  var followed = btn.data("followed-user");
+	  $.ajax({
+	    type: "POST",
+	    url: "/friend/follow",
+	    data: JSON.stringify({
+	      "following": following,
+	      "followed": followed
+	    }),
+	    contentType: "application/json",
+	    success: function(data) {
+	      btn.text("언팔로우");
+	      btn.removeClass("btn-primary");
+	      btn.addClass("btn-danger");
+	      btn.closest("tr").find("td:nth-child(3)").html('<button class="btn btn-danger unfollow-btn" data-followed-user="' + followed + '" data-following="' + following + '">언팔로우</button>');
+	      // 바뀐 버튼을 다시 follow-btn으로 바꿔준다.
+	      btn.removeClass("unfollow-btn");
+	      btn.addClass("follow-btn");
+	    },
+	    error: function (e) {
+	      console.log(e);
+	    },
+	  });
+	});
+
+	$(document).on("click", ".unfollow-btn", function () {
+	  var btn = $(this);
+	  var following = btn.data("following");
+	  var followed = btn.data("followed-user");
+	  $.ajax({
+	    type: "DELETE",
+	    url: "/friend/unfollow/" + following + "/" + followed,
+	    dataType: "json",
+	    success: function (data) {
+	      btn.text("팔로우");
+	      btn.removeClass("btn-danger");
+	      btn.addClass("btn-primary");
+	      btn.closest("tr").find("td:nth-child(3)").html('<button class="btn btn-primary follow-btn" data-followed-user="' + followed + '" data-following="' + following + '">팔로우</button>');
+	      // 바뀐 버튼을 다시 unfollow-btn으로 바꿔준다.
+	      btn.removeClass("follow-btn");
+	      btn.addClass("unfollow-btn");
+	    },
+	    error: function (e) {
+	      console.log(e);
+	    },
+	  });
+	});
+
+//$(document).on("click", "#followerBtn", function () {
+//	  $('#followerModal').modal('show');
+//	  $.ajax({
+//	    type: "GET",
+//	    url: "/friend/followings?followed=test1", // 수정 필요/followings/{followed}
+//	    dataType: "json",
+//	    success: function(data) {
+//	      var tbody = $("#followingTable tbody");
+//	      tbody.empty();
+//	      for (var i = 0; i < data.length; i++) {
+//	        var row = $("<tr></tr>");
+//	        row.append("<td>" + data[i].name + "</td>");
+//	        row.append("<td>" + data[i].id + "</td>");
+//	        var followed = data[i].followed;
+//
+//	        if (followed) {
+//	          row.append('<td><button class="btn btn-danger unfollow-btn" data-followed="' + followed + '" data-following="test1" data-followed-user="' + data[i].followed + '">언팔로우</button></td>');
+//	        } else {
+//	          row.append('<td><button class="btn btn-primary follow-btn" data-followed="' + followed + '" data-following="test1" data-followed-user="' + data[i].followed + '">팔로우</button></td>');
+//	        }
+//	        tbody.append(row);
+//	      }
+//
+//	      // 언팔로우 버튼 클릭 시
+//	      $(document).on("click", ".unfollow-btn", function () {
+//	        console.log("언팔로우 버튼 클릭됨");
+//	        var btn = $(this);
+//	        var following = btn.data("following");
+//	        var followed = btn.data("followed-user");
+//	        $.ajax({
+//	          type: "DELETE",
+//	          url: "/friend/unfollow/" + following + "/" + followed,
+//	          dataType: "json",
+//	          success: function (data) {
+//	            // 언팔로우 버튼을 팔로우 버튼으로 변경
+//	            btn.text("팔로우");
+//	            btn.removeClass("btn-danger");
+//	            btn.addClass("btn-primary");
+//	            btn.data("followed", false);
+//	          },
+//	          error: function (e) {
+//	            console.log(e);
+//	          },
+//	        });
+//	      });
+//
+//	      $(document).on("click", "#followBtn", function () {
+//	    	    var following = $("#following").val();
+//	    	    var followed = $("#followed").val();
+//
+//	    	    $.ajax({
+//	    	        type: "POST",
+//	    	        url: "/friend/follow",
+//	    	        data: JSON.stringify({
+//	    	            "following": following,
+//	    	            "followed": followed
+//	    	        }),
+//	    	        contentType: "application/json",
+//	    	        success: function(data) {
+//	    	            console.log("success");
+//	    	            $("#followModal").modal("hide");
+//	    	        },
+//	    	        error: function(xhr, status, error) {
+//	    	            console.log("error");
+//	    	        }
+//	    	    });
+//	    	});
+//	    },
+//	    error: function(e) {
+//	      console.log(e);
+//	    },
+//	  });
+//	});
+
+
+

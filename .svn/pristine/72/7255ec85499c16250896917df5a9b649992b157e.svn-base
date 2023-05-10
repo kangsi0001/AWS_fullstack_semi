@@ -1,0 +1,64 @@
+package com.kseolha.service;
+
+import com.kseolha.domain.BoardLikeVO;
+import com.kseolha.domain.BoardVO;
+import com.kseolha.mapper.BoardMapper;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Log4j @Service @AllArgsConstructor
+public class BoardServiceImpl implements BoardService {
+    @Setter
+    @Autowired
+    private BoardMapper boardMapper;
+
+    @Override
+    public void register(BoardVO vo) {
+        boardMapper.insert(vo);
+    }
+
+    @Override
+    public BoardVO get(Long bno) {
+        return boardMapper.read(bno);
+    }
+
+    @Override
+    public int modify(BoardVO vo) {
+        return boardMapper.update(vo);
+    }
+
+    @Override
+    public int remove(Long bno) {
+        return boardMapper.delete(bno);
+    }
+
+    @Override
+    public List<BoardVO> getList(Long bno, Long category) {
+        return boardMapper.getList(bno, category);
+    }
+
+    @Override
+    public List<BoardVO> getLists() {
+        return boardMapper.getLists();
+    }
+
+    @Override
+    public List<BoardLikeVO> getLikeList(String id) {
+        return boardMapper.getLike(id);
+    }
+
+    @Override
+    public void like(Long bno, String id) {
+        boardMapper.insertLike(bno, id);
+    }
+
+    @Override
+    public int unlike(Long bno, String id) {
+        return boardMapper.deleteLike(bno, id);
+    }
+}

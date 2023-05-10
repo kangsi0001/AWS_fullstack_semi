@@ -1,0 +1,85 @@
+package com.kseolha.service;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.kseolha.domain.FriendVO;
+import com.kseolha.mapper.FriendMapper;
+
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+
+/**
+ * 
+ * @author 강태수
+ * 
+ * 4/5일 생성
+ * 
+ * 4/6 친구삭제 친구목록 추가 및 팔로우 언팔로우 수정
+ * 
+ * 4/10 일 맞팔로우 생성 
+ * 
+ * 4/12 일 getFollowers, getFollowings 수정
+ */
+
+@Log4j
+@Service
+@AllArgsConstructor
+public class FriendServiceIpml implements FriendService {
+    @Setter
+    @Autowired
+	private FriendMapper friendMapper;
+	
+	@Override
+	public void follow(FriendVO vo) {
+		friendMapper.insert(vo); 
+		
+	}
+	@Override
+	public void unfollow(String following, String followed) {
+		friendMapper.unfollow(following, followed);
+		
+	}
+
+	
+
+//	@Override
+//	public void block(Long fno) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+
+	@Override
+	public List<Map<String, Object>> getFollowers(String following) {
+	
+		return friendMapper.getFollowers(following);
+	}
+
+	@Override
+	public List<Map<String, Object>> getFollowings(String followed) {
+		// TODO Auto-generated method stub
+		return friendMapper.getFollowings(followed);
+	}
+
+
+	@Override
+	public boolean selectFriend(String following, String followed) {
+		return Boolean.valueOf(friendMapper.selectFriend(following, followed));
+	
+	}
+
+
+
+
+	
+
+	
+	
+
+	
+
+}

@@ -1,0 +1,23 @@
+package com.kseolha.domain;
+
+import java.util.Date;
+
+import org.apache.ibatis.type.Alias;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Alias("club")
+public class ClubVO {
+	private Long cno;
+	private String cname;
+	private String intro;
+	private String cleader;
+	private String town;
+	private boolean status;
+	private Date regdate;
+}

@@ -1,0 +1,20 @@
+package com.kseolha.service;
+
+import java.util.List;
+
+import com.kseolha.domain.MessageVO;
+
+public interface MessageService {
+	
+	void send(MessageVO vo);
+	
+	MessageVO get(Long mno);
+	
+	List<MessageVO> chat(String receiver, String sender);
+	
+	List<MessageVO> uncheckedList(String receiver);
+	
+	boolean receive(Long mno);
+	
+	boolean remove(Long mno);
+}

@@ -1,0 +1,76 @@
+package com.kseolha.service;
+
+import com.kseolha.domain.AttachVO;
+import com.kseolha.domain.BoardLikeVO;
+import com.kseolha.domain.BoardVO;
+import com.kseolha.mapper.AttachMapper;
+import com.kseolha.mapper.BoardMapper;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.log4j.Log4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Log4j @Service @AllArgsConstructor @ToString
+public class BoardServiceImpl implements BoardService {
+    @Setter
+    @Autowired
+    private BoardMapper boardMapper;
+    private AttachMapper attachMapper;
+
+    @Override
+    public void register(BoardVO vo) {
+        boardMapper.insert(vo);
+        Long bno = vo.getBno();
+        List<AttachVO> attaches = vo.getAttaches();
+
+        if (attaches == null || attaches.size() == 0) {
+            return;
+        }
+
+        log.info(bno);
+
+        for (AttachVO attach : attaches) {
+            attach.setBno(bno);
+            attachMapper.insert(attach);
+        }
+    }
+
+    @Override
+    public BoardVO get(Long bno) {
+        return boardMapper.read(bno);
+    }
+
+    @Override
+    public int modify(BoardVO vo) {
+        return boardMapper.update(vo);
+    }
+
+    @Override
+    public int remove(Long bno) {
+        return boardMapper.delete(bno);
+    }
+
+    @Override
+    public List<BoardVO> getList(Long bno, Long category, String id) {
+        return boardMapper.getList(bno, category, id);
+    }
+
+    @Override
+    public List<BoardLikeVO> getLikeList(String id) {
+        return boardMapper.getLike(id);
+    }
+
+    @Override
+    public void like(Long bno, String id) {
+        boardMapper.insertLike(bno, id);
+    }
+
+    @Override
+    public int unlike(Long bno, String id) {
+        return boardMapper.deleteLike(bno, id);
+    }
+}

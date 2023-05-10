@@ -1,0 +1,124 @@
+package com.kseolha.service;
+
+import java.util.List;
+
+import org.apache.ibatis.javassist.compiler.MemberResolver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.kseolha.domain.AttachFileDTO;
+import com.kseolha.domain.BoardLikeVO;
+import com.kseolha.domain.BoardVO;
+import com.kseolha.domain.MemberVO;
+import com.kseolha.mapper.AttachMapper;
+import com.kseolha.mapper.BoardMapper;
+import com.kseolha.mapper.ClubMapper;
+import com.kseolha.mapper.ClubMemberMapper;
+import com.kseolha.mapper.FriendMapper;
+import com.kseolha.mapper.MemberMapper;
+import com.kseolha.mapper.ReplyMapper;
+
+@Service
+public class MemberServiceImpl implements MemberService {
+	
+	
+	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+	
+	
+	
+	@Autowired
+	private MemberMapper memberMapper;
+	private AttachMapper attachMapper;
+	private BoardMapper boardMapper;
+	private ReplyMapper replyMapper;
+	private ClubMapper clubMapper;
+	private ClubMemberMapper clubMemberMapper;
+	private FriendMapper friendMapper;
+	
+	@Override
+    public List<MemberVO> getList() throws Exception{
+        return memberMapper.getList();
+    }
+	
+	// 아이디 조회
+	public MemberVO read(String id)throws Exception  {
+		return memberMapper.get(id);
+	}
+	
+	@Override
+	public MemberVO get(String email) {
+		return memberMapper.getEmail(email);
+	}
+
+	// 회원가입
+	@Override
+	public void register(MemberVO vo) throws Exception {
+		vo.setPw(encoder.encode(vo.getPw()));
+		memberMapper.register(vo);
+	}
+	
+	// 로그인
+	@Override
+	public MemberVO login(MemberVO vo) throws Exception {
+		MemberVO memberVO = memberMapper.selectOne(vo);
+		System.out.println(memberVO.getPw());
+		System.out.println(vo.getPw());
+		System.out.println(encoder.matches(vo.getPw(), memberVO.getPw()) ? true : false);
+		return encoder.matches(vo.getPw(), memberVO.getPw()) ? memberVO : null;
+	}
+	
+	// 이메일,아이디 중복검사
+	 @Override
+	 public int idCheck(String email) throws Exception {
+	    return memberMapper.idCheck(email);
+	 }
+	 @Override
+	 public int nickCheck(String id) throws Exception {
+		 return memberMapper.nickCheck(id);
+	 }
+
+	// 아이디 찾기 
+	 public MemberVO selectId(MemberVO vo) throws Exception{
+		 return memberMapper.findId(vo);
+	 }
+
+	// 비밀번호 찾기
+	@Override
+	public void findPw(MemberVO vo) throws Exception {
+		 memberMapper.updatePw(vo);
+	}
+	
+	// 회원아이디 검색
+	@Override
+	public List<MemberVO> searchName(String id) {
+		return memberMapper.searchName(id);
+	}
+	
+	// 회원정보 수정
+	@Override
+	public int modify(MemberVO vo) {
+		
+		return memberMapper.memberUpdate(vo);
+	}
+	
+	// 비밀번호 변경
+	@Override
+	public void modifyPw(MemberVO vo) {
+		vo.setPw(encoder.encode(vo.getPw()));
+		memberMapper.changePw(vo);
+	}
+	
+	// 회원탈퇴
+	@Override
+	public void memberDelete(String email) {
+		memberMapper.deleteMember(email);
+	}
+
+	
+	
+	
+	
+	
+	
+}

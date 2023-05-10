@@ -1,0 +1,27 @@
+package com.kseolha.mapper;
+
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.kseolha.domain.MemberVO;
+
+public interface MemberMapper {
+	/*
+	 * 04.04
+	 * 김민수 
+	 * 로그인, 회원가입
+	 */
+	
+	 // 로그인 
+//	MemberVO selectOne(@Param("email") String email, @Param("pw") String pw);
+	
+	// 로그인 
+	MemberVO selectOne(MemberVO vo);
+	
+	
+	// 회원가입
+	void register(MemberVO vo);
+	
+	
+}

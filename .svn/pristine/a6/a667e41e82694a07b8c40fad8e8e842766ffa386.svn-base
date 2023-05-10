@@ -1,0 +1,31 @@
+let xhr = new XMLHttpRequest();
+
+let boardService = (function () {
+    // 글 단일 조회
+    function get(bno, callback) {
+        url = cp + '/board/' + bno
+        $.getJSON(url)
+            .done(function (data) {
+                if (callback) {
+                    callback(data)
+                }
+            })
+    }
+
+    // 글 목록 조회
+    function getList(param, callback) {
+        let url = cp + '/board/list/' + (param.bno ?? "");
+
+        $.getJSON(url)
+            .done(function (data) {
+                if (callback) {
+                    callback(data)
+                }
+            })
+    }
+
+    return {
+        get : get,
+        getList : getList
+    }
+})()

@@ -1,0 +1,86 @@
+package com.kseolha.handler;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import com.google.gson.Gson;
+import com.kseolha.domain.MemberVO;
+import com.kseolha.domain.MessageVO;
+import com.kseolha.service.MessageService;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j;
+
+@Log4j
+public class MessageHandler extends TextWebSocketHandler {
+
+	private List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
+	
+	@Autowired
+	private MessageService messageService;
+	
+
+	@Override
+	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+		
+		log.warn("입장한 사람 : " + getIdBySession(session));
+		sessions.add(session);
+		
+		log.info("현재 접속자 수 " + sessions.size());
+		log.info("현재 접속자 정보");
+		sessions.forEach(log::warn);
+	}
+	
+	
+	@Override
+	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+		
+		String receiver = message.getPayload();
+		String sender = getIdBySession(session);
+		
+		List<MessageVO> chatList = messageService.chat(receiver, sender);
+		MessageVO get = messageService.get(chatList.get(chatList.size()-1).getMno());
+		List<MessageVO> uncheckedList = messageService.uncheckedList(sender);
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("sender", sender);
+		map.put("receiver", receiver);
+		map.put("get", get);
+		map.put("chat", chatList);
+		map.put("uncheckedList", uncheckedList);
+				
+		Gson gson = new Gson();
+		for(WebSocketSession s : sessions) {
+			if(receiver.equals(getIdBySession(s)) || session == s) {
+				s.sendMessage(new TextMessage(gson.toJson(map)));
+			}
+		}
+	}
+	
+	
+	@Override
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+		log.warn(session.getId() + "로그아웃");
+		sessions.remove(session);	
+	}
+	
+	private String getIdBySession(WebSocketSession session) {
+		MemberVO member = (MemberVO)session.getAttributes().get("member");
+		String id = null;
+		if(member != null /*&& member instanceof MessageVO*/) {
+			id = member.getId();
+		}
+		return id;
+	}
+	
+	
+	
+}

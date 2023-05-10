@@ -1,0 +1,20 @@
+package com.kseolha.mapper;
+
+
+import java.util.List;
+
+import com.kseolha.domain.ClubVO;
+
+public interface ClubMapper {
+
+    void insert(ClubVO vo);
+
+    ClubVO read(Long cno);
+    
+    List<ClubVO> getList();
+
+    int delete(Long cno);
+
+    int update(ClubVO vo);
+	
+}

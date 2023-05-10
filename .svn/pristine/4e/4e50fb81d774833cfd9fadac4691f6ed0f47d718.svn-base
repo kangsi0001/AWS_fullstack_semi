@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kseolha.mapper.MemberMapper">
+
+	<!-- 
+		04.05 김민수 : 로그인,회원가입 쿼리 구현
+	 -->
+
+	<select id="selectOne" resultType="member">
+ 		select email, pw from member where email = #{email} and pw = #{pw}
+ 	</select> 
+ 	
+ 	
+ 	<insert id="register" >
+ 		insert into member(email, id, pw, name, intro, tel, addr) 
+ 		values(#{email}, #{id}, #{pw}, #{name}, #{intro}, #{tel}, #{addr})
+ 	</insert>
+ 	
+</mapper>

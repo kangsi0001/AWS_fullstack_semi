@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kseolha.mapper.BoardMapper">
+    <insert id="insert">
+        <selectKey order="AFTER" keyProperty="bno" resultType="long">
+            select LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO board (content, writer, category) VALUES (#{content}, #{writer}, #{category})
+    </insert>
+
+    <insert id="insertLike">
+        insert into boardlike(bno, id) values (#{bno}, #{id})
+    </insert>
+
+    <delete id="deleteLike">
+        delete from boardlike where bno = #{bno} and id = #{id}
+    </delete>
+
+    <select id="read" resultMap="boardMap">
+        select
+            b.bno,
+            b.title,
+            b.content,
+            (SELECT m.id FROM member m WHERE m.email = b.writer) AS writer,
+            b.regdate,
+            b.updatedate,
+            b.hitcount,
+            b.category,
+            (SELECT COUNT(*) FROM reply r WHERE r.bno = b.bno) AS replycnt,
+            (SELECT COUNT(*) FROM boardLike bl WHERE bl.bno = b.bno) AS likecnt,
+            attach.*
+        FROM board b
+            LEFT JOIN boardLike bL ON b.bno = bL.bno
+            left join attach on b.bno = attach.bno
+        where b.bno = #{bno}
+    </select>
+
+    <select id="getList" resultMap="boardMap">
+        SELECT
+            b.bno,
+            b.title,
+            b.content,
+            m.id AS writer,
+            b.regdate,
+            b.updatedate,
+            b.hitcount,
+            b.category,
+            (SELECT COUNT(*) FROM reply r WHERE r.bno = b.bno) AS replycnt,
+            (SELECT COUNT(*) FROM boardLike bl WHERE bl.bno = b.bno) AS likecnt,
+            IF(bL.id IS NOT NULL and bL.id = #{email}, 1, 0) AS likeOn,
+            attach.*
+        FROM board b
+        LEFT JOIN member m ON m.email = b.writer
+        LEFT JOIN boardLike bL ON b.bno = bL.bno and bL.id = #{email}
+        left join attach on b.bno = attach.bno
+        <![CDATA[
+            WHERE b.bno < #{bno} AND
+        ]]>
+            case
+                when #{id} is not null then b.writer like concat(concat('%', #{id}), '%')
+                else b.writer like concat(concat('%', ''), '%')
+            end
+        and
+            case
+                when #{category} is not null then b.category = #{category}
+                else category is null
+            end
+        ORDER BY b.bno DESC
+        LIMIT 10;
+    </select>
+
+    <resultMap id="boardMap" type="board">
+        <result property="bno" column="bno" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="writer" column="writer" />
+        <result property="regdate" column="regdate" />
+        <result property="updatedate" column="updatedate" />
+        <result property="category" column="category" />
+        <result property="replycnt" column="replycnt" />
+        <result property="likecnt" column="likecnt" />
+        <result property="likeOn" column="likeOn" />
+        <collection property="attaches" resultMap="attachMap" />
+    </resultMap>
+
+    <resultMap id="attachMap" type="attach">
+        <result property="bno" column="bno" />
+        <result property="name" column="name" />
+        <result property="path" column="path" />
+        <result property="uuid" column="uuid" />
+        <result property="image" column="image" />
+    </resultMap>
+
+    <update id="update">
+        update board set content = #{content}, writer = #{writer}, updatedate = now() where bno = #{bno}
+    </update>
+
+    <delete id="delete">
+        delete from board where bno = #{bno}
+    </delete>
+
+    <delete id="deleteLikeByBno">
+        delete from boardlike where bno = #{bno}
+    </delete>
+
+    <delete id="deleteBoardByEmail">
+        delete from board where writer = #{email}
+    </delete>
+
+    <delete id="deleteLikeByEmail">
+        delete from boardLike where id = #{email}
+    </delete>
+
+    <select id="getAllList" resultType="board">
+        SELECT * FROM board b
+        WHERE
+        case
+            when #{category} is not null then b.category = #{category}
+            else category is null
+        end
+        AND
+        case
+            when #{email} is not null then b.writer = #{email}
+            else writer is null
+        end
+
+    </select>
+</mapper>

@@ -1,0 +1,41 @@
+package com.kseolha.controller;
+
+import com.kseolha.domain.BoardVO;
+import com.kseolha.service.BoardService;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RequestMapping("/board/")
+@Controller
+@Log4j
+@AllArgsConstructor
+public class BoardController {
+    private BoardService service;
+
+    @GetMapping({"list", "list/{bno}"}) @ResponseBody
+    public List<BoardVO> getList(@PathVariable(required = false) Optional <Long> bno) {
+        log.info(bno);
+        return service.getList(bno.orElse(service.getLists().get(0).getBno() + 1));
+    }
+
+    @GetMapping("{bno}") @ResponseBody
+    public BoardVO get(@PathVariable Long bno) {
+        return service.get(bno);
+    }
+
+    @PostMapping("{bno}/like") @ResponseBody
+    public void like(@PathVariable Long bno, String id) {
+
+    }
+
+    @GetMapping("board")
+    public String board() {
+        return "board/board";
+    }
+}

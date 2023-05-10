@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kseolha.mapper.BoardMapper">
+    <insert id="insert">
+
+    </insert>
+
+    <insert id="insertSelectKey">
+
+    </insert>
+
+    <update id="read">
+
+    </update>
+
+    <update id="update">
+
+    </update>
+
+    <delete id="delete">
+
+    </delete>
+
+    <select id="getList" resultType="board">
+        select * from board
+    </select>
+
+    <select id="getListWithPaging" resultType="com.kseolha.domain.BoardVO">
+
+    </select>
+
+    <select id="getTotalCnt" resultType="java.lang.Integer">
+
+    </select>
+</mapper>

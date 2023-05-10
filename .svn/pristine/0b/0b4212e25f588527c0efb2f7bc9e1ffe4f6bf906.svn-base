@@ -1,0 +1,58 @@
+package com.kseolha.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.kseolha.domain.ClubVO;
+import com.kseolha.domain.MemberVO;
+import com.kseolha.mapper.ClubMapper;
+import com.kseolha.mapper.MemberMapper;
+
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+
+@Log4j
+@Service
+@AllArgsConstructor
+public class ClubServiceImpl implements ClubService {
+	
+	@Setter
+	@Autowired
+	private ClubMapper clubMapper;
+	
+	private MemberMapper memberMapper;
+	
+	@Override
+	public void register(ClubVO vo) {
+		clubMapper.insert(vo);
+	}
+	
+	@Override
+	public ClubVO get(Long cno) {
+		return clubMapper.read(cno);
+	}
+	
+	@Override
+	public List<ClubVO> getList() {
+		return clubMapper.getList();
+	}
+	
+	@Override
+	public List<ClubVO> getMyClubList(String email) {
+		return clubMapper.getMyClubList(email);
+	}
+	
+	@Override
+	public boolean modify(ClubVO vo) {
+		return clubMapper.update(vo) > 0;
+	}
+	
+	@Override
+	public boolean remove(Long cno) {
+		return clubMapper.delete(cno) > 0;
+	}
+	
+}

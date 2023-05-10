@@ -1,0 +1,78 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="findPw.css" rel="stylesheet">
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+      <div class="row">
+       <div class="col-md-4 block text-center mt-4 login_logo">
+        </div>
+        <div class="col-md-4 login-form login-container">
+          <form class="login-detail" id="loginform" method="post">
+            <h3><img src="/resources/img/logo_text.png" alt=""></h3>
+            <div class="form-group">
+             	 <input type="text" class="form-control mail_input" id="email" name="email" placeholder="사용자 아이디">
+            </div>
+            
+            <div class="form-group">
+              <input type="text" class="form-control" id="name" name="name" placeholder="사용자 이름">
+            </div>
+
+              
+              <div class="mail_check_button">
+              	<button type="button" class="email_inset_box">이메일 인증번호 전송</button>
+              </div>
+
+            
+            <div class="form-group">
+              <input type="text" class="form-control" id="id" name="id" placeholder="사용자 닉네임">
+			</div>
+            <div class="form-group">
+              <input type="password" class="form-control" id="pw" name="pw" placeholder="비밀번호">
+			</div>
+			<div class="form-group forget-password text-center">
+				<a href="#">고객님의 소중한 정보를 담소에 담아주세요 !</a>
+			</div>
+            <div class="form-group">
+              <button id="loginBtn" class="btn btn-lg btn-block bt-sign">가입하기</button>
+            </div>
+            </form>
+            <div class="form-group bt-signup">
+              <p>계정이 있으신가요?</p>
+              <button type="button" onclick="location.href=('login');" class="btn btn-sm btn-block bt-login" id="register">로그인</button>
+            </div>
+        </div>
+      </div>
+   </div>
+   
+<script>
+
+  
+  // 비밀번호 전송
+  $(".mail_check_button").click(function(){
+	  var email = $(".mail_input").val(); // 작성한 이메일
+	  var checkBox = $(".mail_check_input"); // 인증번호 입력란
+	  var boxWrap = $(".mail_check_input_box"); // 인증번호 입력박스 
+	  $.ajax({
+		  type:"GET",
+		  url: "mailCheck?email=" + email,
+		  success:function(data){
+			  checkBox.attr("disabled", false);
+			  boxWrap.attr("id", "mail_check_input_true");
+			  code = data;
+		  }
+	  })
+  }) 
+  
+</script>
+</body>
+</html>

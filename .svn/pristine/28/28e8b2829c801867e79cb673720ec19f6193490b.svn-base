@@ -1,0 +1,218 @@
+/**
+ * @강태수
+ * 4/10일 생성
+ * 모달 
+ * 4/11 수정
+ * ajax 비동기 처리 
+ * 
+ * 4/15 일 
+ * test1 아이디 기준으로 팔로우 목록 팔로워 목록 나오게해서 팔로우 언팔로우 버튼 테스트 성공
+ * 추후 개인피드에서 정보를 끌고와야됨
+ * 
+ * 4/16일 
+ * var followed = data[i].id -> var followed = data[i].email 변경 언팔로우 팔로우 정상작동 
+ * 
+ * 4/18 일 
+ * $(document).ready(function() {
+    const url = window.location.href;
+    const email = url.substr(url.lastIndexOf('/') + 1);
+  //  console.log(email);
+    var following = email; 쿼리스트링 가져옴 그값으로 following, followed 값 넣고 실행 성공
+ * 
+ * 4/19일 
+ * 사람숫자보여주는 count 추가 
+ */
+
+$(document).on("click", "#followerBtn", function () {
+  $('#followerModal').modal('show');
+  $(document).ready(function() {
+    const url = window.location.href;
+    const email = url.substr(url.lastIndexOf('/') + 1);
+  //  console.log(email);
+    var following = email;
+  //  console.log(following);
+    $.ajax({
+      type: "GET",
+      url: "/friend/selectFriend?following=" + following,
+      dataType: "json",
+      success: function(data) {
+        var tbody = $("#followerTable tbody");
+        tbody.empty();
+        for (var i = 0; i < data.length; i++) {
+          console.log(data[i]);
+          var row = $("<tr></tr>");
+          row.append("<td>" + data[i].id + "</td>");
+          row.append("<td>" + data[i].name + "</td>");
+          var followed = data[i].email;
+          console.log(followed);
+
+          // 팔로우/언팔로우 버튼 추가
+          var followBtnText = "";
+          var followBtnClass = "";
+          if (data[i].followedStatus == 1) {
+            followBtnText = "삭제";
+            followBtnClass = "btn-danger unfollow-btn";
+          } else {
+            followBtnText = "팔로우";
+            followBtnClass = "btn-primary follow-btn";
+          }
+          row.append('<td><button class="btn ' + followBtnClass + '" data-followed-status="' + data[i].followedStatus + '" data-following="' + data[i].following + '"data-followed-user="' + followed + '">' + followBtnText + '</button></td>');
+
+          tbody.append(row);
+        }
+
+        // 팔로우/언팔로우 버튼 클릭 이벤트 추가
+        $(document).on("click", ".follow-btn, .unfollow-btn", function () {
+          var btn = $(this);
+          var followed = btn.data("followed-user");
+          console.log(followed);
+          var following = btn.data("following");
+          console.log(following);
+          var followedStatus = btn.data("followed-status");
+
+          if (followedStatus == 1) {
+            // 언팔로우 버튼 클릭 시
+            $.ajax({
+              type: "DELETE",
+              url: "/friend/unfollowing/" + following + "/" + followed + ".com",
+              dataType: "json",
+              success: function (data) {
+                // 언팔로우 버튼을 팔로우 버튼으로 변경
+                btn.text("팔로우");
+                btn.removeClass("btn-danger unfollow-btn");
+                btn.addClass("btn-primary follow-btn");
+                btn.data("followed-status", 0);
+
+                // 팝업창 닫기
+                $('#followerModal').modal('hide');
+                location.reload();
+              },
+              error: function (e) {
+                console.log(e);
+              },
+            });
+          } else {
+            // 팔로우 버튼 클릭 시
+            $.ajax({
+              type: "POST",
+              url: "/friend/follow",
+              data: JSON.stringify({
+                "following": followed,
+                "followed": following
+              }),
+              contentType: "application/json",
+              dataType: "json",
+              success: function (data) {
+                btn.text("삭제");
+                btn.removeClass("btn-primary follow-btn");
+                btn.addClass("btn-danger unfollow-btn");
+                btn.data("followed-status", 1);
+                location.reload();
+              },
+              error: function (e) {
+                console.log(e);
+              },
+            });
+          }
+        })
+      }
+    });
+  })
+});
+
+
+// 팔로워 목록        
+$(document).on("click", "#followingBtn", function() {
+	$('#followingModal').modal('show');
+	  const url = window.location.href;
+	  const email = url.substr(url.lastIndexOf('/') + 1);
+	  console.log(email);
+	    var followed = email;
+	    console.log(followed);
+	  $.ajax({
+	    type: "GET",
+	    url: "/friend/followings?followed=" + followed,
+	    dataType: "json",
+	    success: function(data) {
+	      var tbody = $("#followingTable tbody");
+	      tbody.empty();
+	      for (var i = 0; i < data.length; i++) {
+	        var row = $("<tr></tr>");
+	        row.append("<td>" + data[i].id + "</td>");
+	        row.append("<td>" + data[i].name + "</td>");
+	        var following = data[i].following;
+	        console.log(following);
+	        
+	        row.append('<td><button class="btn btn-danger unfollow-btn" data-following="' + following + '">삭제</button></td>');
+	        tbody.append(row);
+	      }
+
+	      $(document).on("click", ".unfollow-btn", function() {
+	        var btn = $(this);
+	        var following = btn.data("following");
+	        const url = window.location.href;
+	  	  const email = url.substr(url.lastIndexOf('/') + 1);
+	  	  console.log(email);
+	  	    var followed = email;
+	        console.log(following);
+	        console.log(followed);
+	        $.ajax({
+	          type: "DELETE",
+	          url: "/friend/unfollow/" + following + "/" + followed + ".com",
+	          dataType: "json",
+	          success: function(data) {
+	            $('#followingModal').modal('hide');
+	            $('#followingBtn').click();
+	          },
+	          error: function(e) {
+	            console.log(e);
+	          },
+	        });
+	      });
+	    }
+	  });
+	});
+
+
+    //  내가 팔로우한 숫자
+	$(document).ready(function() {
+		const url = window.location.href;
+	    const email = url.substr(url.lastIndexOf('/') + 1);
+	    console.log(email);
+	  //  var following = email;
+		  $.ajax({
+		    url: "/friend/" + email + "/followerCount",
+		    method: "GET",
+		    dataType : "json",
+		    success: function(response) {
+		      // 서버에서 받아온 팔로워 수를 HTML 요소에 삽입
+		      $("#followerCount").text(response);
+		    },
+		    error: function(error) {
+		      console.log(error);
+		    }
+		  });
+		});
+	//나를 팔로우한 숫자 
+	$(document).ready(function() {
+		const url = window.location.href;
+	    const email = url.substr(url.lastIndexOf('/') + 1);
+	    console.log(email);
+	  //  var following = email;
+		  $.ajax({
+		    url: "/friend/" + email + "/followCount",
+		    method: "GET",
+		    dataType : "json",
+		    success: function(response) {
+		      // 서버에서 받아온 팔로워 수를 HTML 요소에 삽입
+		      $("#followCount").text(response);
+		    },
+		    error: function(error) {
+		      console.log(error);
+		    }
+		  });
+		});
+
+
+
+

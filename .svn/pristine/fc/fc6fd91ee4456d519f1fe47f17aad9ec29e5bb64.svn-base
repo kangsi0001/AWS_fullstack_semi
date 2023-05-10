@@ -1,0 +1,165 @@
+/**
+ * @강태수
+ * 4/10일 생성
+ * 모달 
+ * 4/11 수정
+ * ajax 비동기 처리 
+ * 
+ * 4/15 일 
+ * test1 아이디 기준으로 팔로우 목록 팔로워 목록 나오게해서 팔로우 언팔로우 버튼 테스트 성공
+ * 추후 개인피드에서 정보를 끌고와야됨
+ * 
+ * 4/16일 
+ * var followed = data[i].id -> var followed = data[i].email 변경 언팔로우 팔로우 정상작동 
+ */
+$(document).on("click", "#followerBtn", function () {
+  $('#followerModal').modal('show');
+  $.ajax({
+    type: "GET",
+    url: "/friend/selectFriend?following=test1",
+    dataType: "json",
+    success: function(data) {
+      var tbody = $("#followerTable tbody");
+      tbody.empty();
+      for (var i = 0; i < data.length; i++) {
+    	  console.log(data[i]);
+        var row = $("<tr></tr>");
+        row.append("<td>" + data[i].name + "</td>");
+        row.append("<td>" + data[i].id + "</td>");
+ //       row.append("<td>" + data[i].followed + "</td>");
+        var followed = data[i].email;
+
+        // 팔로우/언팔로우 버튼 추가
+        var followBtnText = "";
+        var followBtnClass = "";
+        if (data[i].followedStatus == 1) {
+          followBtnText = "삭제";
+          followBtnClass = "btn-danger unfollow-btn";
+        } else {
+          followBtnText = "팔로우";
+          followBtnClass = "btn-primary follow-btn";
+        }
+        row.append('<td><button class="btn ' + followBtnClass + '" data-followed-status="' + data[i].followedStatus + '" data-following="test1" data-followed-user="' + followed + '">' + followBtnText + '</button></td>');
+
+        tbody.append(row);
+      }
+
+      // 팔로우/언팔로우 버튼 클릭 이벤트 핸들러 추가
+      $(document).on("click", ".follow-btn, .unfollow-btn", function () {
+        var btn = $(this);
+        var following = btn.data("following");
+      //  var foll = data[i].followed;
+        var followed = btn.data("followed-user");//
+     //   console.log(followed);
+        
+        var followedStatus = btn.data("followed-status");
+
+        if (followedStatus == 1) {
+          // 언팔로우 버튼 클릭 시
+          $.ajax({
+            type: "DELETE",
+            url: "/friend/unfollow/" + followed + "/" + "test1" ,
+            dataType: "json",
+            success: function (data) {
+              // 언팔로우 버튼을 팔로우 버튼으로 변경
+              btn.text("팔로우");
+              btn.removeClass("btn-danger unfollow-btn");
+              btn.addClass("btn-primary follow-btn");
+              btn.data("followed-status", 0);
+
+              // 팝업창 닫기
+              $('#followerModal').modal('hide');
+              location.reload();
+            },
+            error: function (e) {
+              console.log(e);
+            },
+          });
+        } else {
+          // 팔로우 버튼 클릭 시
+        	
+          $.ajax({
+            type: "POST",
+            url: "/friend/follow",
+            data: JSON.stringify({
+            	"following": followed,
+                "followed": "test1"
+            	
+            }),
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+              console.log(data[i].followed);
+              btn.text("삭제");
+              btn.removeClass("btn-primary follow-btn");
+              btn.addClass("btn-danger unfollow-btn");
+              btn.data("followed-status", 1);
+              
+              location.reload();
+              
+            },
+            error: function (e) {
+              console.log(e);
+            },
+          });
+        }
+      })
+    }
+  });
+});
+
+  
+  
+
+
+  
+             
+
+
+
+        
+$(document).on("click", "#followingBtn", function() {
+	  $('#followingModal').modal('show');
+	  $.ajax({
+	    type: "GET",
+	    url: "/friend/followings?followed=test1",
+	    dataType: "json",
+	    success: function(data) {
+	      var tbody = $("#followingTable tbody");
+	      tbody.empty();
+	      for (var i = 0; i < data.length; i++) {
+	        var row = $("<tr></tr>");
+	        row.append("<td>" + data[i].name + "</td>");
+	        row.append("<td>" + data[i].id + "</td>");
+	        var following = data[i].following; // 수정한 부분
+	        row.append('<td><button class="btn btn-danger unfollow-btn" data-following="' + following + '">삭제</button></td>'); // 수정한 부분
+	        tbody.append(row);
+	      }
+
+	      // 언팔로우 버튼 클릭 시
+	      $(document).on("click", ".unfollow-btn", function() {
+	        console.log("언팔로우 버튼 클릭됨");
+	        var btn = $(this);
+	        var following = btn.data("following"); // 수정한 부분
+	        $.ajax({
+	          type: "DELETE",
+	          url: "/friend/unfollow/" + following + "/" + "test1",
+	          dataType: "json",
+	          success: function(data) {
+	            // 언팔로우 버튼을 삭제하고 목록을 다시 불러옴
+	            $('#followingModal').modal('hide');
+	            $('#followingBtn').click();
+	          },
+	          error: function(e) {
+	            console.log(e);
+	          },
+	        });
+	      });
+	    }
+	  });
+	});
+
+
+
+
+

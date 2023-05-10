@@ -1,0 +1,46 @@
+package com.kseolha.mapper;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.kseolha.domain.FriendVO;
+
+import lombok.extern.log4j.Log4j;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
+@Log4j
+public class FriendMapperTests {
+	
+	@Autowired
+	private FriendMapper friendMapper;
+	
+	@Test // 4/5 일 테스트 성공
+	public void testInsert() {
+		FriendVO vo = new FriendVO();
+		vo.setFollowing("test2");
+		vo.setFollowed("test3");
+		friendMapper.insert(vo);
+		log.info(vo);
+		
+	}
+	
+	@Test // 4/5 일 테스트 성공
+	public void testDelete(){
+		log.info(friendMapper.delete(2L));
+		
+		
+		
+	}
+	@Test
+	public void testGetList(){
+		friendMapper.getList().forEach(log::info);
+	}
+	
+	
+	
+
+}

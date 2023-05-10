@@ -1,0 +1,48 @@
+package com.kseolha.service;
+
+import com.kseolha.domain.BoardVO;
+import com.kseolha.mapper.BoardMapper;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Log4j @Service @AllArgsConstructor
+public class BoardServiceImpl implements BoardService {
+    @Setter
+    @Autowired
+    private BoardMapper boardMapper;
+
+    @Override
+    public void register(BoardVO vo) {
+        boardMapper.insert(vo);
+    }
+
+    @Override
+    public BoardVO get(Long bno) {
+        return boardMapper.read(bno);
+    }
+
+    @Override
+    public boolean modify(BoardVO vo) {
+        return boardMapper.update(vo) > 0;
+    }
+
+    @Override
+    public boolean remove(Long bno) {
+        return boardMapper.delete(bno) > 0;
+    }
+
+    @Override
+    public List<BoardVO> getList(Long bno) {
+        return boardMapper.getList(bno);
+    }
+
+    @Override
+    public List<BoardVO> getLists() {
+        return boardMapper.getLists();
+    }
+}

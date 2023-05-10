@@ -1,0 +1,490 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java"
+	isELIgnored="false"%>
+
+
+<jsp:include page="../layout/header.jsp"></jsp:include>
+<link
+	href="${pageContext.request.contextPath }/resources/css/styleBoard_230407.css"
+	rel="stylesheet">
+<link
+	href="${pageContext.request.contextPath }/resources/css/clubget.css"
+	rel="stylesheet">
+<style>
+	.ck.ck-content {
+		min-height: 300px;
+	}
+</style>
+
+
+<div class="feed-main">
+
+	<div class="feeds" style="width: 600px">
+		<div class="myfeed">
+			<!-- 검색창 -->
+			<div class="input-group myboard club-search">
+				<input class="club-search-input" type="text"
+					placeholder="글 내용, #태그, @작성자 검색"> <i class="fas fa-search"></i>
+			</div>
+
+			<!-- 모임 글 쓰기 -->
+			<div class="myboard club-write">
+				<p>새로운 소식을 남겨보세요.</p>
+				<ul class="club-board-btnbox">
+					<li><a><i class="far fa-heart"></i></a></li>
+					<li><a><i class="far fa-heart"></i></a></li>
+					<li><a><i class="far fa-heart"></i></a></li>
+					<li><a><i class="far fa-heart"></i></a></li>
+					<li><a><i class="far fa-heart"></i></a></li>
+					<li><a><i class="far fa-heart"></i></a></li>
+					<li><a><i class="far fa-heart"></i></a></li>
+					<li><a><i class="far fa-comment"></i></a></li>
+				</ul>
+			</div>
+
+			<!-- 모임 공지사항 -->
+			<div class="myboard club-notice">
+				<a>
+					<h6 class="notice-info ps-3 pt-2" style="color: #757575">
+						공지사항<span class="notice-num me-3">4</span>
+					</h6>
+				</a> <a><div class="notice-info ps-3 my-2">[공지] 메이플 정모 있어요 화요일
+						8시</div></a> <a><div class="notice-info ps-3 my-2">[공지] 메이플 정모 있어요
+						화요일 8시</div></a> <a><div class="notice-info ps-3 my-2">[공지] 메이플 정모
+						있어요 화요일 8시</div></a> <a><div class="notice-info ps-3 my-2">[공지]
+						메이플 정모 있어요 화요일 8시</div></a>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="myinfo thisclub myinfo_moblie mt-5">
+		<div class="cardbox-header" style="position: relative">
+			<div class="media"
+				style="flex-direction: column; align-items: stretch">
+				<div class="d-flex">
+					<img class="thisclub-img info-img"
+						style="position: absolute; right: -7px; top: 5px"
+						src="${pageContext.request.contextPath }/resources/img/attach.jpg">
+				</div>
+				<div class="thisclub-profile mt-3">
+					<a class="clubinfo" style="color: #757575;"> <span
+						class="m-0 fw-bold" style="max-width: 120px; display: block;">${club.cname}</span>
+						<p class="my-2 mb-4 small">${club.intro}</p>
+					</a>
+					<p class="float-start m-0 small" style="cursor: pointer">
+						<c:if test="${club.town != null}">
+							<i class="fas fa-map-marker-alt pe-2"></i>
+						</c:if>${club.town}
+					</p>
+					<p class="m-0 small float-end" style="cursor: pointer">
+						멤버 <span>${club.membercnt == 0 ? 1 : club.membercnt}</span>
+					</p>
+					<button class="my-2 clubinfo-button join-club">가입하기</button>
+				</div>
+				<div class="mt-2 pt-2 float-end thisclub-tag"
+					style="border-top: #b1b1b1 solid 1px;">
+					<a><span>#메이플</span></a> <a><span>#메이플</span></a> <a><span>#메이플</span></a>
+					<a><span>#메이플</span></a> <a><span>#메이플</span></a> <a><span>#메이플</span></a>
+					<a><span>#메이플</span></a> <a><span>#메이플</span></a> <a><span>#롤</span></a>
+					<a><span>#맛집</span></a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 모임 글쓰기 폼입니다! -->
+	<div class="modal fade" id="clubwrite-modal" tabindex="-1"
+		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content"
+				style="flex-direction: row; flex-wrap: wrap; border-radius: 10px;">
+				<div class="col-12" style="height: 38px">
+					<a> <i class="fas fa-arrow-left float-start pt-2"
+						style="font-size: 22px; padding-left: 10px"></i>
+					</a> <a id="clubBoardReg" class="float-end "
+						style="padding: 8px 12px 0">공유하기</a>
+				</div>
+
+				<div class="col-12">
+					<div class="media p-3">
+						<div class="d-flex">
+							<a href=""> <img class="write-img"
+								src="${pageContext.request.contextPath }/resources/img/attach.jpg">
+							</a>
+						</div>
+						<div class="media-body" style="padding-top: 2px">
+							<span class="">${member.id}</span>
+						</div>
+					</div>
+					<div>
+						<textarea id="clubBoardContent" placeholder="소소한 이야기를 담아보세요"></textarea>
+					</div>
+					<div class="write-option">
+						<span class=" float-start pt-1 ps-3">위치 추가</span><i
+							class="fas fa-map-marker-alt float-end p-3"
+							style="margin-top: -8px"></i>
+					</div>
+					<div class="write-option" style="height: 45.6px">
+						<span class=" float-start pt-2 ps-3">태그 추가</span><i
+							class="fas fa-hashtag float-end p-3" style="margin-top: -2px"></i>
+					</div>
+					<div class="write-option" style="height: 45.6px">
+						<span class="float-start pt-2 ps-3">첨부 파일</span><i
+							class="fas fa-folder-plus float-end p-3"
+							style="margin-top: -2px; margin-right: -47px;"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- 모임 가입하기 모달 -->
+	<div class="modal fade" id="joinClub-modal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			style="width: 400px;" role="document">
+			<div class="modal-content"
+				style="flex-direction: row; flex-wrap: wrap; border-radius: 10px;">
+				<div class="col-12 join-title my-2" style="font-size: 20px">${club.cname }</div>
+				<div class="px-3 py-2 mx-2 join-title" style="width: 100%">가입질문에
+					답해주세요</div>
+				<div class="col-12" style="text-align: center;">
+					<div class="my-2 ms-4 py-2 float-start">
+						Q . <span>메이플 렙 몇?</span>
+					</div>
+					<textarea class="p-2 col-10"
+						style="background-color: #f0f0f066; border: #b1b1b1 solid 1px; height: 100px"
+						placeholder="답변을 작성해 주세요"></textarea>
+				</div>
+				<div class="col-12 my-3 mb-4" style="text-align: center">
+					<div class="col-2 me-4 btn join-btn">취소</div>
+					<div class="col-2 btn join-btn">가입</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- 모임 정보 자세히 보기 모달 -->
+	<div class="modal fade" id="clubinfo-modal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			style="width: 400px;" role="document">
+			<div class="modal-content h-100"
+				style="flex-direction: row; flex-wrap: wrap; border-radius: 10px;">
+				<div class="media p-4"
+					style="flex-direction: column; align-items: stretch">
+					<div class="d-flex justify-content-center">
+						<img class="thisclub-img info-img infomodal-img"
+							src="/resources/img/attach.jpg">
+					</div>
+					<div class="thisclub-profile mt-3">
+						<a class="clubinfo" style="color: #757575;"> 
+						<span class="m-0 fw-bold">${club.cname }  <%-- ( <span>${moment(club.regdate).fromNow()} ~ ing</span> ) --%> </span>
+							<p class="my-2 small">${club.intro }</p>
+						</a>
+						<p class="float-start m-0 small" style="cursor: pointer">
+							<i class="fas fa-map-marker-alt pe-2"></i>${club.town }
+						</p>
+						<p class="m-0 small float-end" style="cursor: pointer">
+							멤버 <span>${club.membercnt }</span> ( 모임장 : <span>${member.email}</span> )
+						</p>
+					</div>
+					<div class="mt-2 py-2 float-end border-top thisclub-tag">
+						<a><span>#메이플</span></a> <a><span>#메이플</span></a> <a><span>#메이플</span></a>
+						<a><span>#메이플</span></a> <a><span>#메이플</span></a> <a><span>#메이플</span></a>
+						<a><span>#메이플</span></a> <a><span>#메이플</span></a> <a><span>#롤</span></a>
+						<a><span>#맛집</span></a>
+					</div>
+					<c:if test="${club.cleader == member.email}">
+					<!-- 모임 멤버 리스트 보기 -->	
+					<div class="clubmember-list border-top d-flex flex-column overflow-auto" style="max-height: 200px">
+						<div class="py-2 fw-bold">모임 멤버</div>
+
+					</div>
+					<div class="pt-4 d-flex justify-content-end">
+						<button class="btn border-0 p-2 px-3 me-3 update-btn" style="background-color:#cacaca; color: white">정보 수정</button>
+						<button class="btn border-0 p-2 px-3 remove-btn" style="background-color:#ff6767; color: white">모임 삭제하기</button>
+					</c:if>
+					<c:if test="${club.cleader != member.email}">
+					<div class="pt-4 d-flex justify-content-end">
+						<button class="btn border-0 p-2 px-3 withdraw-btn" style="background-color:#ff6767; color: white">탈퇴하기</button>
+					</c:if>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 모임 정보 자세히 보기 모달 End -->
+		
+		
+	</div>	
+</div>
+	<!-- 모임 수정하기 폼 Start -->
+	<div class="modal fade" id="clubmodify-modal" tabindex="-1"
+		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg" style="width: 700px;"
+			role="document">
+			<div class="modal-content p-3" style="flex-direction: row; flex-wrap: wrap; border-radius: 10px;">
+				<form class="col-10 m-auto d-flex flex-row flex-wrap" name="clubcreate-form" id="clubcreate-form">
+					<div class="col-12 h-25 my-4 d-flex flex-column align-items-start">
+						<label class="" for="cname">모임 이름</label>
+						<input class="col-12 h-75 p-2 border-0 border-bottom" type="text" id="cname" name="cname" value="${club.cname }">
+					</div>
+					<div class="club-attach col-6 bg-light mb-4 d-flex justify-content-center align-items-center" style="height: 300px; cursor:pointer">
+						<i class="fas fa-image fs-3"></i>
+					</div>
+					<div class="col-6 d-flex flex-column p-3 pt-0 align-items-start">
+						<label class="py-2 col-12" for="intro">모임 소개</label>
+						<textarea class="h-25 border col-12" id="intro" name="intro">${club.intro }</textarea>
+						<label class="py-2 col-12" for="town" >모임 동네</label>
+						<input class="border col-12" type="text" value="${club.town}">
+						<label class="py-2 col-12">#해시태그</label>
+						<input class="border col-12" type="text">
+						<div class="col-12 py-2 mt-2 d-flex align-items-center justify-content-end">
+							<label class="py-2 pe-2" for="status" >비밀 모임 설정</label>
+							<input class="pt-1" type="checkbox" id="status" name="status" value="${club.status }" style="width:16px; height:16px;">
+						</div>
+						<input type="hidden" id="cleader" name="cleader" value="${club.cleader }" readonly>
+					</div>
+					<div class="col-12 d-flex justify-content-end pe-3 py-1 mb-2">
+						<button class="p-2 px-3 btn border-0 bg-light">만들기</button>
+					</div>
+				</form>			
+			</div>
+		</div>
+	</div>
+	<!-- 모임 수정하기 폼 End -->
+
+<script>
+	
+	$(function () {
+		// 모든 모임 리스트
+		clubService.getList({}, function(result){
+			console.log(result)
+		})
+		
+		// 해당 모임의 해당 멤버에게 가입하기 버튼 숨기기
+		clubMemberService.get({club : '${club.cno}', member : '${member.email}'}, function(result) {
+			if(result.status != 200) {
+				$(".join-club").css("display", "none");
+			}
+		})
+		
+		/* 모임 글 작성 str */
+		function getClubBoardLiStr(obj) {
+			return `
+			<!-- 모임 글 폼 -->
+			<div class="myboard clubboard">
+				<!-- 모임글: 작성자 정보 -->
+				<div class="clubboard-header cardbox-header py-2">
+					<div class="float-end">
+						<button class="btn btn-flat btn-flat-icon" type="button">
+						<i data-writer="\${obj.writer}" data-bno="\${obj.bno}" data-content="\${obj.content}" class="fas fa-ellipsis-h"></i>
+						</button>
+					</div>
+					<div class="media m-0">
+						<div class="d-flex mr-3">
+							<a href=""><img class="img-fluid rounded-circle"
+								src="${pageContext.request.contextPath }/resources/img/attach.jpg"
+								alt="User"></a>
+						</div>
+						<div class="media-body">
+							<p class="m-0">\${obj.writer}</p>
+							<small><span><i class="icon ion-md-pin"></i>
+							\${obj.bno}</span></small> <small><span><i
+									class="icon ion-md-time"></i> \${moment(obj.regdate).startOf('day').fromNow()}</span></small>
+						</div>
+					</div>
+				</div>
+				<!-- 모임글: 이미지 -->
+				<div class="cardbox-item clubboard-item">
+					<!-- <img src=""> -->
+				</div>
+
+				<!-- 모임글: 내용 -->
+				<div class="cardbox-base clubboard-base">
+					<div>
+						<span class="board-content">\${obj.content}</span>
+					</div>
+					<div>
+						<p style="margin: 30px auto 0">좋아요 \${obj.likecnt}개</p>
+					</div>
+					<ul class="board-btnbox">
+						<li><a><i data-bno="\${obj.bno}" class="far fa-heart"></i></a></li>
+						<li><a><i class="far fa-comment"></i></a></li>
+						<li><a><i class="far fa-paper-plane"></i></a></li>
+						<li><a><i data-bno="\${obj.bno}" class="far fa-bookmark"></i></a></li>
+					</ul>
+				</div>
+			</div>
+			`;
+		}
+		
+		// 해당 모임의 멤버 리스트 Str
+		function getClubMemberList(obj) {
+			return `<!-- 모임 멤버 1 -->
+				<div id="clubMember" class="ms-2 d-flex flex-row align-items-center justify-content-between" style="font-size:14px">
+					<p class="m-0 pe-2">\${obj.member} <span class="px-2" style="color:#b1b1b1; font-size:11px">가입: \${moment(obj.regdate).format("YY/MM/DD")}</span></p>
+					<input type="hidden" value="\${obj.member}">
+					<button class="btn border-0 col-2" style="color:red; font-size:14px">삭제</button>
+				</div>			
+			`;
+		}
+		
+		// 해당 모임의 멤버 리스트 출력
+		clubMemberService.getClubList({club : '${club.cno}'}, function(result) {
+			console.log(result)
+			for(let i in result){
+				let str = '';
+				if(result[i].member != '${member.email}'){
+					str = getClubMemberList(result[i]);
+					$(".clubmember-list").append(str);
+				}
+			}
+			
+			/* 모임의 멤버 강제 탈퇴 */
+			$(".clubmember-list").children().each(function() {
+				$(this).find("button").on("click", function() {
+					let removeMember = $(this).parent().find("input").val();
+					if(confirm(removeMember + "님을 강제 탈퇴하시겠습니까?")) {
+						clubMemberService.deleteMember({member: removeMember , club: '${club.cno}'}, function() {
+							alert("강제 탈퇴되었습니다.")
+						})
+						$(this).parent().remove()
+					}
+				})
+			})
+		})
+		
+		// 해당 모임의 글 리스트 출력
+		boardService.getList({category : '${club.cno}'}, function(result) {
+			console.log(result)
+			for(let i in result){
+				var str = '';
+				str = getClubBoardLiStr(result[i]);
+				$(".myfeed").append(str);
+			}
+		})
+		
+		// 모임의 글 작성하기 -- 현재 작동 x board에서 register메서드의 category 필요
+		$("#clubBoardReg").on("click", function() {
+			event.preventDefault();
+			
+			boardService.register({content : $("#clubBoardContent").val(), writer : '${member.email}', category : '${club.cno}'}, function (result) {
+				$(".clubwrite-modal").modal("hide");
+				let str = "";
+				str = getClubBoardLiStr(result);				
+			})
+		})
+		
+		/* 모임에 가입하기 기능 */
+		$(".join-btn").eq(1).on("click", function() {
+		let membercnt = '${club.membercnt}'
+			clubMemberService.register({member: '${member.email}', club : '${club.cno}'}, function(result) {
+				$("#joinClub-modal").modal("hide");
+				$(".join-club").css("display", "none");
+				$(".thisclub-profile p span").html(membercnt)
+
+				notiService.insert({type : 'clubRegister', sender : '${member.email}', receiver : '${club.cleader}', cno : '${club.cno}'}, function (result) {})
+
+				let msg = "clubRegister," + '${member.id}' + "," + '${club.cleader}' + "," + null
+				aws.send(msg);
+			})
+		})
+		
+		
+		/* 모임 정보 수정 기능 */
+				
+		$(".update-btn").on("click", function() {
+			$("#clubinfo-modal").modal("hide")
+			$("#clubmodify-modal").modal("show")
+			
+			
+			clubService.update({}, function(result) {
+				
+			})
+		})
+		
+		
+		
+		/* 모임 삭제 기능 */
+		$(".remove-btn").on("click", function() {
+			clubMemberService.getClubList({club : '${club.cno}'}, function(result) {
+				if(result.length != 1){
+					alert("모임원을 모두 삭제한 이후 모임 삭제가 가능합니다")
+					return;
+				} else {
+					$("#clubinfo-modal").modal("hide")
+					if(confirm("모임을 삭제하시겠습니까")) {
+				 		clubMemberService.deleteMember({member: '${member.email}', club : '${club.cno}'}, function(result) {
+							console.log(result)
+							clubService.deleteClub({cno :'${club.cno}'}, function(result) {
+								console.log(result)
+								alert("삭제되었습니다.")
+								location.href = cp + "board/feed"
+							})
+				 		})
+					}
+				}				
+			})
+		})
+
+	})
+
+	/* 모임에 탈퇴하기 기능 */
+	$(".withdraw-btn").on("click", function() {
+		let membercnt = '${club.membercnt}'
+		console.log("삭제 클릭")
+		if(confirm('${club.cname}' + " 에서 탈퇴하시겠습니까?")) {
+	 		clubMemberService.deleteMember({member: '${member.email}', club : '${club.cno}'}, function(result) {
+				console.log(result)
+	 			$("#clubinfo-modal").modal("hide");
+				$(".thisclub-profile p span").html(membercnt-1)
+				$(".join-club").css("display", "inline-block");
+			})
+		}
+ 	})
+
+	/* 모임 가입하기 클릭 -> 모달 */
+	$(".join-club").on("click", function() {
+		$("#joinClub-modal").modal("show")
+		$(".join-btn").eq(0).on("click", function() {
+			$(".join-club textarea").val('')
+			$("#joinClub-modal").modal("hide");
+		})
+	})
+	
+	/* 모임에 글 쓰기 클릭 -> 모달 */
+	$(".club-write").on("click", function() {
+		$("#clubwrite-modal").modal("show")
+	})
+	
+	
+	/* 해당 모임 정보 자세히 보기 -> 모달  */
+	$(".thisclub-profile :not(button)").on("click", function() {
+		$("#clubinfo-modal").modal("show")
+	})
+	
+	
+</script>
+<script>
+
+	ClassicEditor.create($('#clubBoardContent').get(0), {
+		ckfinder : {
+		}
+	});
+
+	ClassicEditor.create($('#board-content').get(0), {
+		toolbar : []
+	}).then(function(editor) {
+		editor.enableReadOnlyMode('lock');
+	});
+</script>
+
+
+<jsp:include page="../layout/footer.jsp"></jsp:include>
+

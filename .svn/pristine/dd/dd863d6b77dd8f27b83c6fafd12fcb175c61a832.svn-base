@@ -1,0 +1,40 @@
+package com.kseolha.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.kseolha.domain.FriendVO;
+import com.kseolha.mapper.FriendMapper;
+
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+@Log4j
+@Service
+@AllArgsConstructor
+public class FriendServiceIpml implements FriendService {
+    @Setter
+    @Autowired
+	private FriendMapper friendMapper;
+	
+	@Override
+	public void follow(FriendVO vo) {
+		friendMapper.insert(vo); 
+		
+	}
+
+	@Override
+	public void unfollow(Long fno) {
+		friendMapper.delete(fno);
+		
+	}
+
+	@Override
+	public List<FriendVO> getList() {
+		// TODO Auto-generated method stub
+		return friendMapper.getList();
+	}
+
+}

@@ -1,0 +1,80 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="${pageContext.request.contextPath }/resources/css/sign.css" rel="stylesheet">
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+
+
+<body>
+
+<div class="container">
+      <div class="row">
+       <div class="col-md-4 block text-center mt-4 login_logo">
+        </div>
+        <div class="col-md-4 login-form login-container">
+          <form class="login-detail" id="loginform" method="post">
+            <h3><img src="${pageContext.request.contextPath }/resources/img/logo_text.png" alt=""></h3>
+            <div class="form-group">
+              <input type="text" class="form-control id_input" id="email" name="email" placeholder="이메일 주소">
+            </div>
+            <span class="idCheck1">사용 가능한 이메일입니다.</span>
+            <span class="idCheck2">가입한 이메일이 이미 존재합니다 </span>
+            <div class="form-group">
+              <input type="text" class="form-control" id="name" name="name" placeholder="사용자 이름">
+			</div>
+            <div class="form-group">
+              <input type="text" class="form-control" id="id" name="id" placeholder="사용자 닉네임">
+			</div>
+            <div class="form-group">
+              <input type="password" class="form-control" id="pw" name="pw" placeholder="비밀번호">
+			</div>
+			<div class="form-group forget-password text-center">
+				<a href="#">고객님의 소중한 정보를 담소에 담아주세요 !</a>
+			</div>
+            <div class="form-group">
+              <button id="loginBtn" class="btn btn-lg btn-block bt-login">가입하기</button>
+            </div>
+            </form>
+            <div class="form-group bt-signup">
+              <p>계정이 있으신가요?</p>
+              <button type="button" onclick="location.href=('login');" class="btn btn-sm btn-block bt-sign" id="register">로그인</button>
+            </div>
+        </div>
+      </div>
+   </div>
+<script>
+  $(document).ready(function(){
+	  $(".bt-login").click(function(){
+		  $("#loginform").attr("action", "/member/signup")
+		  $("#loginform").submit();
+	  })
+  })
+  
+  $('.id_input').on("propertychange change keyup paste input", function(){
+	  var email = $('.id_input').val();
+	  var data = {email : email};
+		
+		$.ajax({
+			type : "post",
+			url : "/member/memberIdChk",
+			data : data,
+			success : function(result){
+				if(result != 'fail'){
+					$('.idCheck1').css("display", "inline-block");
+					$('.idCheck2').css("display", "none");
+				}else {
+					$('.idCheck2').css("display", "inline-block");
+					$('.idCheck1').css("display", "none");
+				}
+			}
+		}); 
+  })
+</body>
+</html>

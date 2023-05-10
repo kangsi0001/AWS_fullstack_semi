@@ -1,0 +1,22 @@
+package com.kseolha.service;
+
+import java.util.Map;
+
+import com.kseolha.domain.MemberVO;
+
+public interface MemberService {
+	/*
+	 * 04.04 
+	 * 김민수 
+	 * 로그인,회원가입 
+	 */
+		
+	// 회원가입 
+	void register(MemberVO member);
+	
+	// 로그인
+//	MemberVO login(String email, String pw);
+	
+	// 로그인 
+	
+}

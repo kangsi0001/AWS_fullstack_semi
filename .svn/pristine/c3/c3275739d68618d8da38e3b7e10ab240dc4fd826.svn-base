@@ -1,0 +1,66 @@
+let messageService = (function() {
+	
+	function send(obj, callback) {
+		$.ajax({
+			url: cp + "message/new",
+			method : "post",
+			dataType : "json",
+			data : JSON.stringify(obj),
+			contentType : "application/json; charset=utf-8",
+			success : callback
+		})
+	}
+	
+	function chat(param, callback) {
+		$.getJSON(cp + "message/" + param.receiver + "/r/" + param.sender + "/s")
+		.done(callback);
+	}	
+	
+	function uncheckedList(id, callback) {
+		$.getJSON(cp + "message/" + id + "uncheck")
+	}
+	
+	function receive(obj, callback) {
+		$.ajax({
+			url : cp + "message/check/" + obj.mno,
+			method : "put",
+			dataType : "json",
+			data : JSON.stringify(obj),
+			contentType : "application/json; charset=utf-8",
+			success : callback
+		})
+	}
+	
+	function remove(mno, callback) {}
+	
+	return {
+		send : send,
+		chat : chat,
+		uncheckedList : uncheckedList,
+		receive : receive,
+		remove : remove,
+	}
+})()
+
+let memberService = (function () {
+	
+	    function getList(param, callback) {
+	    	
+	        let memberurl = cp + 'member/getList';
+	
+	        $.getJSON(memberurl)
+	            .done(function (data) {
+	                if (callback) {
+	                    callback(data)
+	                }
+	            }).fail(function (data) {
+	            	if(callback) {
+	            		callback(data)
+	            	}
+	            })
+	    }
+	    
+	    return {
+	    	getList : getList
+	    }
+})()

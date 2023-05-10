@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kseolha.mapper.MemberMapper">
+
+	<!-- 
+		04.05 김민수 : 로그인,회원가입 쿼리 구현
+	 -->
+	 
+	<!-- 자동 로그인 -->
+	<select id="autologin" resultType="member">
+		select * from member where email = #{email}
+	</select>
+	
+	<!-- 로그인 -->
+	<select id="selectOne" resultType="member">
+		select * from member where email = #{email}
+ 		<!-- select * from member where email = #{email} and pw = #{pw} -->
+ 	</select> 
+ 	
+ 	<!-- 아이디 찾기 -->
+	<select id="findId" resultType="member">
+ 		select email from member where id = #{id} and name = #{name}
+ 	</select> 
+ 	
+ 	<!-- 회원가입 -->
+ 	<insert id="register" >
+ 		insert into member(email, id, pw, name) 
+ 		values(#{email}, #{id}, #{pw}, #{name})
+ 	</insert>
+ 	
+ 	<!-- 아이디 중복검사 -->
+     <select id="idCheck" resultType="int">
+         select count(*) from member where email = #{email}
+     </select>
+     
+     <!-- 임시비밀번호 발급 -->
+     <update id="updatePw">
+     	 update member set pw = #{pw} where id = #{id} and name = #{name}
+     </update>
+     <select id="readmember" resultType="member">
+		select * from member where id = #{id} and name = #{name}
+	</select>
+ 	
+ 	<!-- 자동 로그인 -->
+ 	<!-- 자동로그인을 체크한경우 현재 세션아이디와 로그인 유지기간을 업데이트 -->
+ 	<!-- <update id="keepLogin">
+
+ 	</update> -->
+ 	
+ 	<!-- MemberController의 loginCookie값과 DB의 session_key가 일치하는 회원의 정보를 가져오기  -->
+ 	<!-- <select id="memberSessionKey" resultMap="member">
+ 
+ 	</select> -->
+ 	
+</mapper>

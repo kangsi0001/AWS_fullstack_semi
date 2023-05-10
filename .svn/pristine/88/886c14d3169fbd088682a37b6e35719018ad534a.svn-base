@@ -1,0 +1,15 @@
+package com.kseolha.mapper;
+
+import com.kseolha.domain.MessageRoomVO;
+
+public interface MessageRoomMapper {
+	
+	void insert();
+	
+	MessageRoomVO selectRoom(Long mrno);
+	
+	int delete(Long mrno);
+	
+	int update(Long mrno);
+	
+}

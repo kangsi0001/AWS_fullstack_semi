@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kseolha.mapper.ClubMapper">
+
+	<insert id="insert">
+		<selectKey order="AFTER" keyProperty="cno" resultType="long">
+			select LAST_INSERT_ID()
+		</selectKey>
+		insert into club (cname, intro, cleader, town, status) values (#{cname}, #{intro}, #{cleader}, #{town}, #{status})
+	</insert>
+	
+	<select id="read" resultType="club">
+		select c.*, (select count(*) from clubmember cm join club c on c.cno = cm.club where c.cno = #{cno}) membercnt
+		from club c
+		where c.cno = #{cno};
+	</select>
+	
+	<select id="getList" resultType="club">
+		select * from club
+	</select>
+	
+	<select id="getMyClubList" resultType="club">
+		select c.* from club c, clubmember cm where c.cno = cm.club and cm.`member` = #{email} 
+	</select>
+	
+	<select id="searchName" resultType="club">
+		select * from club c where c.cname LIKE CONCAT(CONCAT('%', #{keyword}),'%')
+	</select>
+
+	<select id="searchKeyword">
+		select distinct c.town from club c
+		where c.town like CONCAT(CONCAT('%', #{keyword}),'%')
+	</select>
+
+	<select id="searchTown" resultType="club">
+		select * from club c where c.town = #{town}
+	</select>
+	
+	<update id="update">
+		update club set cname = #{cname}, intro = #{intro}, town = #{town}, status = #{status} where cno = #{cno}
+	</update>
+	
+	<!-- 클럽 삭제 -->
+	<delete id="delete">
+		delete from club where cno = #{cno}
+	</delete>
+	
+</mapper>

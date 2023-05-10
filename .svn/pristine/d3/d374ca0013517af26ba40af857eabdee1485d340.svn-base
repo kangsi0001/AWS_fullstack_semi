@@ -1,0 +1,18 @@
+package com.kseolha.domain;
+
+import org.apache.ibatis.type.Alias;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Alias("friend")
+public class FriendVO {
+	private Long fno;             // pk
+	private String following;    // fk
+	private String followed;     // fk
+
+}
